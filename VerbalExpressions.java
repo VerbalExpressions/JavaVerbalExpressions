@@ -2,7 +2,7 @@ import java.util.regex.Pattern;
 
 class VerbalExpressions {
     private String prefixes, source, suffixes, pattern = "";
-    int modifiers = Pattern.MULTILINE;
+    private int modifiers = Pattern.MULTILINE;
 
     private String sanitize(String value) {
         if(value == null)
