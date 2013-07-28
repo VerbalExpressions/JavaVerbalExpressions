@@ -3,7 +3,6 @@ import java.util.regex.Pattern;
 class VerbalExpressions {
     private String prefixes, source, suffixes, pattern = "";
     int modifiers = Pattern.MULTILINE;
-    Pattern p;
 
     public VerbalExpressions() {
 
@@ -18,8 +17,8 @@ class VerbalExpressions {
     public VerbalExpressions add(String value) {
         this.source = this.source != null ? this.source + value : value;
         if (this.source != null) {
-            this.p = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
-            this.pattern = this.p.pattern();
+            Pattern p = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
+            this.pattern = p.pattern();
         }
         return this;
     }
