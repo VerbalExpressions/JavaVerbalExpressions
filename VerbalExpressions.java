@@ -21,7 +21,7 @@ class VerbalExpressions {
 
     public VerbalExpressions startOfLine(boolean enable) {
         this.prefixes = enable ? "^" : "";
-        this.add( "" );
+        this.add("");
         return this;
     }
 
@@ -31,7 +31,7 @@ class VerbalExpressions {
 
     public VerbalExpressions endOfLine(boolean enable) {
         this.suffixes = enable ? "$" : "";
-        this.add( "" );
+        this.add("");
         return this;
     }
 
@@ -41,7 +41,7 @@ class VerbalExpressions {
 
     public VerbalExpressions then(String value) {
         value = sanitize(value);
-        this.add( "(" + value + ")" );
+        this.add("(" + value + ")");
         return this;
     }
 
@@ -52,40 +52,40 @@ class VerbalExpressions {
 
     public VerbalExpressions maybe(String value) {
         value = sanitize(value);
-        this.add( "(" + value + ")?" );
+        this.add("(" + value + ")?");
         return this;
     }
 
     public VerbalExpressions anything() {
-        this.add( "(.*)" );
+        this.add("(.*)");
         return this;
     }
 
     public VerbalExpressions anythingBut(String value) {
         value = sanitize(value);
-        this.add( "([^" + value + "]*)" );
+        this.add("([^" + value + "]*)");
         return this;
     }
 
     public VerbalExpressions something() {
-        this.add( "(.+)" );
+        this.add("(.+)");
         return this;
     }
 
     public VerbalExpressions somethingBut(String value) {
         value = sanitize(value);
-        this.add( "([^" + value + "]+)" );
+        this.add("([^" + value + "]+)");
         return this;
     }
 
     public VerbalExpressions replace(String source, String value) {
-        this.add( "" );
+        this.add("");
         this.source.replaceAll(pattern,value);
         return this;
     }
 
     public VerbalExpressions lineBreak() {
-        this.add( "(\\n|(\\r\\n))" );
+        this.add("(\\n|(\\r\\n))");
         return this;
     }
 
@@ -95,18 +95,18 @@ class VerbalExpressions {
     }
 
     public VerbalExpressions tab() {
-        this.add( "\\t" );
+        this.add("\\t");
         return this;
     }
 
     public VerbalExpressions word() {
-        this.add( "\\w+" );
+        this.add("\\w+");
         return this;
     }
 
     public VerbalExpressions anyOf(String value) {
         value = sanitize(value);
-        this.add( "[" + value + "]" );
+        this.add("[" + value + "]");
         return this;
     }
 
@@ -159,7 +159,7 @@ class VerbalExpressions {
                 break;
         }
 
-        this.add( "" );
+        this.add("");
         return this;
     }
 
@@ -190,14 +190,14 @@ class VerbalExpressions {
                 break;
         }
 
-        this.add( "" );
+        this.add("");
         return this;
     }
 
     public VerbalExpressions withAnyCase(boolean enable) {
         if (enable) this.addModifier( 'i' );
         else this.removeModifier( 'i' );
-        this.add( "" );
+        this.add("");
         return this;
     }
 
@@ -208,7 +208,7 @@ class VerbalExpressions {
     public VerbalExpressions searchOneLine(boolean enable) {
         if (enable) this.removeModifier( 'm' );
         else this.addModifier( 'm' );
-        this.add( "" );
+        this.add("");
         return this;
     }
 
@@ -229,18 +229,18 @@ class VerbalExpressions {
         if (this.prefixes.indexOf("(") == -1) this.prefixes += "(";
         if (this.suffixes.indexOf(")") == -1) this.suffixes = ")" + this.suffixes;
 
-        this.add( ")|(" );
+        this.add(")|(");
         if (value != null) this.then(value);
         return this;
     }
 
     public boolean test(String toTest) {
-        this.add( "" );
+        this.add("");
         return Pattern.matches(this.pattern, toTest);
     }
 
     public String toString() {
-        this.add( "" );
+        this.add("");
         return this.pattern.toString();
     }
 }
