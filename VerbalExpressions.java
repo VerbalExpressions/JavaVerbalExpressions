@@ -4,10 +4,6 @@ class VerbalExpressions {
     private String prefixes, source, suffixes, pattern = "";
     int modifiers = Pattern.MULTILINE;
 
-    public VerbalExpressions() {
-
-    }
-
     private String sanitize(String value) {
         if(value == null)
             return value;
