@@ -1,13 +1,8 @@
 import java.util.regex.Pattern;
 
-class VerbalExpressions {
+class VerbalExpression {
     private String prefixes, source, suffixes, pattern = "";
-    int modifiers = Pattern.MULTILINE;
-    Pattern p;
-
-    public VerbalExpressions() {
-
-    }
+    private int modifiers = Pattern.MULTILINE;
 
     private String sanitize(String value) {
         if(value == null)
@@ -15,112 +10,112 @@ class VerbalExpressions {
         return Pattern.quote(value);
     }
 
-    public VerbalExpressions add(String value) {
+    public VerbalExpression add(String value) {
         this.source = this.source != null ? this.source + value : value;
         if (this.source != null) {
-            this.p = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
-            this.pattern = this.p.pattern();
+            Pattern p = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
+            this.pattern = p.pattern();
         }
         return this;
     }
 
-    public VerbalExpressions startOfLine(boolean enable) {
+    public VerbalExpression startOfLine(boolean enable) {
         this.prefixes = enable ? "^" : "";
-        this.add( "" );
+        this.add("");
         return this;
     }
 
-    public VerbalExpressions startOfLine() {
+    public VerbalExpression startOfLine() {
         return startOfLine(true);
     }
 
-    public VerbalExpressions endOfLine(boolean enable) {
+    public VerbalExpression endOfLine(boolean enable) {
         this.suffixes = enable ? "$" : "";
-        this.add( "" );
+        this.add("");
         return this;
     }
 
-    public VerbalExpressions endOfLine() {
+    public VerbalExpression endOfLine() {
         return endOfLine(true);
     }
 
-    public VerbalExpressions then(String value) {
+    public VerbalExpression then(String value) {
         value = sanitize(value);
-        this.add( "(" + value + ")" );
+        this.add("(" + value + ")");
         return this;
     }
 
-    public VerbalExpressions find(String value) {
+    public VerbalExpression find(String value) {
         this.then(value);
         return this;
     }
 
-    public VerbalExpressions maybe(String value) {
+    public VerbalExpression maybe(String value) {
         value = sanitize(value);
-        this.add( "(" + value + ")?" );
+        this.add("(" + value + ")?");
         return this;
     }
 
-    public VerbalExpressions anything() {
-        this.add( "(.*)" );
+    public VerbalExpression anything() {
+        this.add("(.*)");
         return this;
     }
 
-    public VerbalExpressions anythingBut(String value) {
+    public VerbalExpression anythingBut(String value) {
         value = sanitize(value);
-        this.add( "([^" + value + "]*)" );
+        this.add("([^" + value + "]*)");
         return this;
     }
 
-    public VerbalExpressions something() {
-        this.add( "(.+)" );
+    public VerbalExpression something() {
+        this.add("(.+)");
         return this;
     }
 
-    public VerbalExpressions somethingBut(String value) {
+    public VerbalExpression somethingBut(String value) {
         value = sanitize(value);
-        this.add( "([^" + value + "]+)" );
+        this.add("([^" + value + "]+)");
         return this;
     }
 
-    public VerbalExpressions replace(String source, String value) {
-        this.add( "" );
+    public VerbalExpression replace(String source, String value) {
+        this.add("");
         this.source.replaceAll(pattern,value);
         return this;
     }
 
-    public VerbalExpressions lineBreak() {
-        this.add( "(\\n|(\\r\\n))" );
+    public VerbalExpression lineBreak() {
+        this.add("(\\n|(\\r\\n))");
         return this;
     }
 
-    public VerbalExpressions br() {
+    public VerbalExpression br() {
         this.lineBreak();
         return this;
     }
 
-    public VerbalExpressions tab() {
-        this.add( "\\t" );
+    public VerbalExpression tab() {
+        this.add("\\t");
         return this;
     }
 
-    public VerbalExpressions word() {
-        this.add( "\\w+" );
+    public VerbalExpression word() {
+        this.add("\\w+");
         return this;
     }
 
-    public VerbalExpressions anyOf(String value) {
+    public VerbalExpression anyOf(String value) {
         value = sanitize(value);
-        this.add( "[" + value + "]" );
+        this.add("[" + value + "]");
         return this;
     }
 
-    public VerbalExpressions any(String value) {
+    public VerbalExpression any(String value) {
         this.anyOf(value);
         return this;
     }
 
-    public VerbalExpressions range(Object[] args) {
+    public VerbalExpression range(Object[] args) {
         String value = "[";
         for(int _from = 0; _from < args.length; _from += 2) {
             int _to = _from+1;
@@ -137,7 +132,7 @@ class VerbalExpressions {
         return this;
     }
 
-    public VerbalExpressions addModifier(char modifier) {
+    public VerbalExpression addModifier(char modifier) {
         switch (modifier) {
             case 'd':
                 modifiers |= Pattern.UNIX_LINES;
@@ -164,11 +159,11 @@ class VerbalExpressions {
                 break;
         }
 
-        this.add( "" );
+        this.add("");
         return this;
     }
 
-    public VerbalExpressions removeModifier(char modifier) {
+    public VerbalExpression removeModifier(char modifier) {
         switch (modifier) {
             case 'd':
                 modifiers ^= Pattern.UNIX_LINES;
@@ -195,29 +190,29 @@ class VerbalExpressions {
                 break;
         }
 
-        this.add( "" );
+        this.add("");
         return this;
     }
 
-    public VerbalExpressions withAnyCase(boolean enable) {
+    public VerbalExpression withAnyCase(boolean enable) {
         if (enable) this.addModifier( 'i' );
         else this.removeModifier( 'i' );
-        this.add( "" );
+        this.add("");
         return this;
     }
 
-    public VerbalExpressions withAnyCase() {
+    public VerbalExpression withAnyCase() {
         return withAnyCase(true);
     }
 
-    public VerbalExpressions searchOneLine(boolean enable) {
+    public VerbalExpression searchOneLine(boolean enable) {
         if (enable) this.removeModifier( 'm' );
         else this.addModifier( 'm' );
-        this.add( "" );
+        this.add("");
         return this;
     }
 
-    public VerbalExpressions multiple(String value) {
+    public VerbalExpression multiple(String value) {
         value = this.sanitize(value);
         switch (value.charAt(0)) {
             case '*':
@@ -230,22 +225,22 @@ class VerbalExpressions {
         return this;
     }
 
-    public VerbalExpressions or(String value) {
+    public VerbalExpression or(String value) {
         if (this.prefixes.indexOf("(") == -1) this.prefixes += "(";
         if (this.suffixes.indexOf(")") == -1) this.suffixes = ")" + this.suffixes;
 
-        this.add( ")|(" );
+        this.add(")|(");
         if (value != null) this.then(value);
         return this;
     }
 
     public boolean test(String toTest) {
-        this.add( "" );
+        this.add("");
         return Pattern.matches(this.pattern, toTest);
     }
 
     public String toString() {
-        this.add( "" );
+        this.add("");
         return this.pattern.toString();
     }
 }
