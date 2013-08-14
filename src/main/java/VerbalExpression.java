@@ -1,8 +1,12 @@
 import java.util.regex.Pattern;
 
 class VerbalExpression {
-    private String prefixes, source, suffixes, pattern = "";
+    private String prefixes = "", source = "", suffixes = "", pattern = "";
     private int modifiers = Pattern.MULTILINE;
+
+    public VerbalExpression () {
+        this.updatePattern();
+    }
 
     private String sanitize(String value) {
         if(value == null)
@@ -11,17 +15,19 @@ class VerbalExpression {
     }
 
     public VerbalExpression add(String value) {
-        this.source = this.source != null ? this.source + value : value;
-        if (this.source != null) {
-            Pattern p = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
-            this.pattern = p.pattern();
-        }
+        this.source += value;
+        return this.updatePattern();
+    }
+
+    public VerbalExpression updatePattern() {
+        Pattern p = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
+        this.pattern = p.pattern();
         return this;
     }
 
     public VerbalExpression startOfLine(boolean enable) {
         this.prefixes = enable ? "^" : "";
-        this.add("");
+        this.updatePattern();
         return this;
     }
 
@@ -31,7 +37,7 @@ class VerbalExpression {
 
     public VerbalExpression endOfLine(boolean enable) {
         this.suffixes = enable ? "$" : "";
-        this.add("");
+        this.updatePattern();
         return this;
     }
 
@@ -79,7 +85,7 @@ class VerbalExpression {
     }
 
     public VerbalExpression replace(String source, String value) {
-        this.add("");
+        this.updatePattern();
         this.source.replaceAll(pattern,value);
         return this;
     }
@@ -159,7 +165,7 @@ class VerbalExpression {
                 break;
         }
 
-        this.add("");
+        this.updatePattern();
         return this;
     }
 
@@ -190,14 +196,14 @@ class VerbalExpression {
                 break;
         }
 
-        this.add("");
+        this.updatePattern();
         return this;
     }
 
     public VerbalExpression withAnyCase(boolean enable) {
         if (enable) this.addModifier( 'i' );
         else this.removeModifier( 'i' );
-        this.add("");
+        this.updatePattern();
         return this;
     }
 
@@ -208,7 +214,7 @@ class VerbalExpression {
     public VerbalExpression searchOneLine(boolean enable) {
         if (enable) this.removeModifier( 'm' );
         else this.addModifier( 'm' );
-        this.add("");
+        this.updatePattern();
         return this;
     }
 
@@ -235,12 +241,10 @@ class VerbalExpression {
     }
 
     public boolean test(String toTest) {
-        this.add("");
         return Pattern.matches(this.pattern, toTest);
     }
 
     public String toString() {
-        this.add("");
         return this.pattern.toString();
     }
 }
