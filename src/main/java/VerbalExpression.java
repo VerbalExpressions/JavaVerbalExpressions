@@ -1,4 +1,5 @@
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 class VerbalExpression {
     private String prefixes = "", source = "", suffixes = "", pattern = "";
@@ -9,9 +10,19 @@ class VerbalExpression {
     }
 
     private String sanitize(String value) {
-        if(value == null)
-            return value;
-        return Pattern.quote(value);
+        Matcher matcher = Pattern.compile("").matcher("").usePattern(Pattern.compile("[^\\w]"));
+        int lastEnd = 0;
+        String result = "";
+        matcher.reset(value);
+        boolean matcherCalled = false;
+        while (matcher.find()) {
+            matcherCalled = true;
+            if (matcher.start() != lastEnd) result += value.substring(lastEnd, matcher.start());
+            result += "\\" + value.substring(matcher.start(), matcher.end());
+            lastEnd = matcher.end();
+        }
+        if (!matcherCalled) return value;
+        return result;
     }
 
     public VerbalExpression add(String value) {
@@ -240,8 +251,12 @@ class VerbalExpression {
         return this;
     }
 
+    public boolean testExact(String toTest) {
+        return Pattern.compile(this.pattern, this.modifiers).matcher(toTest).matches();
+    }
+
     public boolean test(String toTest) {
-        return Pattern.matches(this.pattern, toTest);
+        return Pattern.compile(this.pattern, this.modifiers).matcher(toTest).find();
     }
 
     public String toString() {
