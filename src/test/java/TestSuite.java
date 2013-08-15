@@ -4,7 +4,8 @@ import org.junit.runners.Suite;
 //JUnit Suite Test
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ 
-   VerbalExpressionUnitTests.class
+   BasicFunctionalityUnitTests.class,
+   RealWorldUnitTests.class
 })
 public class TestSuite {
 

@@ -3,7 +3,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import static org.junit.Assert.*;
 
-public class VerbalExpressionUnitTests {
+public class BasicFunctionalityUnitTests {
    
    @Test
    public void testSomething() {
@@ -24,7 +24,6 @@ public class VerbalExpressionUnitTests {
       assertTrue(testRegex.test(testString));
    }
 
-   @Ignore ("Test not ready yet")
    @Test
    public void testAnythingBut() {
       VerbalExpression testRegex = new VerbalExpression ()
@@ -79,9 +78,11 @@ public class VerbalExpressionUnitTests {
                                        .startOfLine()
                                        .then("a")
                                        .maybe("b");
+      
+      assertEquals("Regex isn't correct", testRegex.toString(), "^(a)(b)?");
       String testString = "acb";
-      assertTrue("Maybe has a 'b' after an 'a'", testRegex.test(testString));
 
+      assertTrue("Maybe has a 'b' after an 'a'", testRegex.test(testString));
       testString = "abc";
       assertTrue("Maybe has a 'b' after an 'a'", testRegex.test(testString));
    }
@@ -166,11 +167,10 @@ public class VerbalExpressionUnitTests {
                                        .then("a");
       String testString = "A";
       assertFalse("not case insensitive", testRegex.test(testString));
-
       testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("a")
-                                       .withAnyCase();
+                      .startOfLine()
+                      .then("a")
+                      .withAnyCase();
       testString = "A";
       assertTrue("case insensitive", testRegex.test(testString));
 
@@ -199,18 +199,4 @@ public class VerbalExpressionUnitTests {
       testString = "a\nb";
       assertTrue("b is on the second line but we are only searching the first", testRegex.test(testString));
    }
-
-   /*@Before
-   public void setUp(){
-      value1=3;
-      value2=3;
-   }
-
-   // test method to add two values
-   @Ignore ("Test not ready yet") 
-   @Test
-   public void testAdd(){
-      double result= value1 + value2;
-      assertTrue(result == 6);
-   }*/
 }
