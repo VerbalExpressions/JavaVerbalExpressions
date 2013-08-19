@@ -12,7 +12,7 @@ VerbalExpression testRegex = new VerbalExpression.Builder()
 	           					 .maybe("s")
 	           					 .then("://")
 	           					 .maybe("www.")
-	           					 .anythingBut(" ")
+	           					 .anythingButNot(" ")
 	           					 .endOfLine()
 	           					 .build();
 
