@@ -6,14 +6,15 @@ VerbalExpressions is a Java library that helps to construct difficult regular ex
 ##Examples
 ```java
 
-VerbalExpression testRegex = new VerbalExpression ()
+VerbalExpression testRegex = new VerbalExpression.Builder()
 	           					 .startOfLine()
 	           					 .then("http")
 	           					 .maybe("s")
 	           					 .then("://")
 	           					 .maybe("www.")
 	           					 .anythingBut(" ")
-	           					 .endOfLine();
+	           					 .endOfLine()
+	           					 .build();
 
 // Create an example URL
 String url = "https://www.google.com";
@@ -25,10 +26,11 @@ testRegex.testExact(url); //True
 testRegex.toString(); // Ouputs the regex used: 
 					  // ^(http)(s)?(\:\/\/)(www\.)?([^\ ]*)$
 
-VerbalExpression testRegex = new VerbalExpression ()
+VerbalExpression testRegex = new VerbalExpression.Builder()
                                  .startOfLine()
                                  .then("abc")
-                                 .or("def");
+                                 .or("def")
+                                 .build();
 
 String testString = "defzzz";
 

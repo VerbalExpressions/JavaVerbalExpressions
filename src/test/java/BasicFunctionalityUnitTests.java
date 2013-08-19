@@ -1,202 +1,200 @@
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.Ignore;
+
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class BasicFunctionalityUnitTests {
-   
-   @Test
-   public void testSomething() {
-      VerbalExpression testRegex = new VerbalExpression ().something();
-      String testString = "";
 
-      assertFalse("empty string doesn't have something", testRegex.test(testString));
-      testString = "a";
-      assertTrue("a", testRegex.test(testString));
-   }
+    @Test
+    public void testSomething() {
+        VerbalExpression testRegex = new VerbalExpression.Builder().something().build();
 
-   @Test
-   public void testAnything() {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .anything();
-      String testString = "what";
-      assertTrue(testRegex.test(testString));
-   }
+        assertFalse("Null object doesn't have something", testRegex.test(null));
+        assertFalse("empty string doesn't have something", testRegex.test(""));
+        assertTrue("a", testRegex.test("a"));
+    }
 
-   @Test
-   public void testAnythingBut() {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .anythingBut("w");
-      String testString = "what";
-      assertTrue("starts with w",testRegex.test(testString));
-   }
+    @Test
+    public void testAnything() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .anything()
+                .build();
 
-   @Test
-   public void testSomethingBut() {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .somethingBut("a");
-      String testString = "";
-      assertFalse("empty string doesn't have something", testRegex.test(testString));
+        assertTrue(testRegex.test("what"));
+        assertFalse(testRegex.test(""));
+        assertTrue(testRegex.test(" "));
+    }
 
-      testString = "b";
-      assertTrue("doesn't start with a", testRegex.test(testString));
-      
-      testString = "a";
-      assertFalse("starts with a", testRegex.test(testString));
-   }
+    @Test
+    public void testAnythingBut() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .anythingButNot("w")
+                .build();
 
-   @Test
-   public void testStartOfLine() {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("a");
-      String testString = "a";
-      assertTrue("Starts with a", testRegex.test(testString));
-      testString = "ba";
-      assertFalse("Doesn't start with a", testRegex.test(testString));
-   }
+        assertFalse("starts with w", testRegex.testExact("what"));
+        assertTrue("Not contain w", testRegex.testExact("that"));
+        assertTrue("Not contain w", testRegex.testExact(" "));
+        assertFalse("Null object", testRegex.testExact(null));
+    }
 
-   @Test
-   public void testEndOfLine () {
-       VerbalExpression testRegex = new VerbalExpression ()
-                                        .find("a")
-                                        .endOfLine();
-       String testString = "a";
+    @Test
+    public void testSomethingBut() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .somethingButNot("a")
+                .build();
 
-       
-       assertTrue("Ends with a", testRegex.test(testString));
+        assertFalse("Null string", testRegex.testExact(null));
+        assertFalse("empty string doesn't have something", testRegex.testExact(""));
+        assertTrue("doesn't contain a", testRegex.testExact("b"));
+        assertFalse("Contain a", testRegex.testExact("a"));
+    }
 
-       testString = "ab";
-       assertFalse("Doesn't end with a", testRegex.test(testString));
-   }
+    @Test
+    public void testStartOfLine() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("a")
+                .build();
 
-   @Test
-   public void testMaybe () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("a")
-                                       .maybe("b");
-      
-      assertEquals("Regex isn't correct", testRegex.toString(), "^(a)(b)?");
-      String testString = "acb";
+        assertFalse("Null string", testRegex.testExact(null));
+        assertFalse("empty string doesn't have something", testRegex.testExact(""));
+        assertTrue("Starts with a", testRegex.test("a"));
+        assertTrue("Starts with a", testRegex.test("ab"));
+        assertFalse("Doesn't start with a", testRegex.test("ba"));
+    }
 
-      assertTrue("Maybe has a 'b' after an 'a'", testRegex.test(testString));
-      testString = "abc";
-      assertTrue("Maybe has a 'b' after an 'a'", testRegex.test(testString));
-   }
+    @Test
+    public void testEndOfLine() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .find("a")
+                .endOfLine()
+                .build();
 
-   @Test
-   public void testAnyOf () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("a")
-                                       .anyOf("xyz");
-      String testString = "ay";       
-      assertTrue("Has an x, y, or z after a", testRegex.test(testString));
-      
-      testString = "abc";
-      assertFalse("Doesn't have an x, y, or z after a", testRegex.test(testString));
-   }
+        assertTrue("Ends with a", testRegex.test("bba"));
+        assertTrue("Ends with a", testRegex.test("a"));
+        assertFalse("Ends with a", testRegex.test(null));
+        assertFalse("Doesn't end with a", testRegex.test("ab"));
+    }
 
-   @Test
-   public void testOr () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("abc")
-                                       .or("def");
-      String testString = "defzzz";
-      assertTrue("Starts with abc or def", testRegex.test(testString));
+    @Test
+    public void testMaybe() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("a")
+                .maybe("b")
+                .build();
 
-      testString = "xyzabc";
-      assertFalse("Doesn't start with abc or def", testRegex.test(testString));
-   }
+        assertEquals("Regex isn't correct", testRegex.toString(), "^(a)(b)?");
 
-   @Test
-   public void testLineBreak () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("abc")
-                                       .lineBreak()
-                                       .then("def");
-      String testString = "abc\r\ndef";
-      assertTrue("abc then line break then def", testRegex.test(testString));
+        assertTrue("Maybe has a 'b' after an 'a'", testRegex.test("acb"));
+        assertTrue("Maybe has a 'b' after an 'a'", testRegex.test("abc"));
+        assertFalse("Maybe has a 'b' after an 'a'", testRegex.test("cab"));
+    }
 
-      testString = "abc\ndef";
-      assertTrue("abc then line break then def", testRegex.test(testString));
+    @Test
+    public void testAnyOf() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("a")
+                .anyOf("xyz")
+                .build();
 
-      testString = "abc\r\n def";
-      assertFalse("abc then line break then space then def", testRegex.test(testString));
-   }
+        assertTrue("Has an x, y, or z after a", testRegex.test("ay"));
+        assertFalse("Doesn't have an x, y, or z after a", testRegex.test("abc"));
+    }
 
-   @Test
-   public void testBr () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("abc")
-                                       .lineBreak()
-                                       .then("def");
-      String testString = "abc\r\ndef";
-      assertTrue("abc then line break then def", testRegex.test(testString));
+    @Test
+    public void testOr() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("abc")
+                .or("def")
+                .build();
 
-      testString = "abc\ndef";
-      assertTrue("abc then line break then def", testRegex.test(testString));
+        assertTrue("Starts with abc or def", testRegex.test("defzzz"));
+        assertFalse("Doesn't start with abc or def", testRegex.test("xyzabc"));
+    }
 
-      testString = "abc\r\n def";
-      assertFalse("abc then line break then space then def", testRegex.test(testString));
-   }
+    @Test
+    public void testLineBreak() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("abc")
+                .lineBreak()
+                .then("def")
+                .build();
 
-   @Test
-   public void testTab () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .tab()
-                                       .then("abc");
-      String testString = "\tabc";
-      assertTrue("tab then abc", testRegex.test(testString));
+        assertTrue("abc then line break then def", testRegex.test("abc\r\ndef"));
+        assertTrue("abc then line break then def", testRegex.test("abc\ndef"));
+        assertFalse("abc then line break then space then def", testRegex.test("abc\r\n def"));
+    }
 
-      testString = "abc";
-      assertFalse("no tab then abc", testRegex.test(testString));
-   }
+    @Test
+    public void testBr() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("abc")
+                .lineBreak()
+                .then("def")
+                .build();
 
-   @Test
-   public void testWithAnyCase () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("a");
-      String testString = "A";
-      assertFalse("not case insensitive", testRegex.test(testString));
-      testRegex = new VerbalExpression ()
-                      .startOfLine()
-                      .then("a")
-                      .withAnyCase();
-      testString = "A";
-      assertTrue("case insensitive", testRegex.test(testString));
+        assertTrue("abc then line break then def", testRegex.test("abc\r\ndef"));
+        assertTrue("abc then line break then def", testRegex.test("abc\ndef"));
+        assertFalse("abc then line break then space then def", testRegex.test("abc\r\n def"));
+    }
 
-      testString = "a";
-      assertTrue("case insensitive", testRegex.test(testString));
-   }
+    @Test
+    public void testTab() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .tab()
+                .then("abc")
+                .build();
 
-   @Test
-   public void testSearchOneLine () {
-      VerbalExpression testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("a")
-                                       .br()
-                                       .then("b")
-                                       .endOfLine();
-      String testString = "a\nb";
-      assertTrue("b is on the second line", testRegex.test(testString));
+        assertTrue("tab then abc", testRegex.test("\tabc"));
+        assertFalse("no tab then abc", testRegex.test("abc"));
+    }
 
-      testRegex = new VerbalExpression ()
-                                       .startOfLine()
-                                       .then("a")
-                                       .br()
-                                       .then("b")
-                                       .endOfLine()
-                                       .searchOneLine(true);
-      testString = "a\nb";
-      assertTrue("b is on the second line but we are only searching the first", testRegex.test(testString));
-   }
+    @Test
+    public void testWithAnyCase() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("a")
+                .build();
+
+        assertFalse("not case insensitive", testRegex.test("A"));
+        testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("a")
+                .withAnyCase()
+                .build();
+
+        assertTrue("case insensitive", testRegex.test("A"));
+        assertTrue("case insensitive", testRegex.test("a"));
+    }
+
+    @Test
+    public void testSearchOneLine() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("a")
+                .br()
+                .then("b")
+                .endOfLine()
+                .build();
+
+        assertTrue("b is on the second line", testRegex.test("a\nb"));
+
+        testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("a")
+                .br()
+                .then("b")
+                .endOfLine()
+                .searchOneLine(true)
+                .build();
+
+        assertTrue("b is on the second line but we are only searching the first", testRegex.test("a\nb"));
+    }
 }
