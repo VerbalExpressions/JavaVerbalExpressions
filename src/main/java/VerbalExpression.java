@@ -12,9 +12,6 @@ public class VerbalExpression {
         private Pattern pattern;
         private int modifiers = Pattern.MULTILINE;
 
-        public Builder() {
-        }
-
         private String sanitize(final String pValue) {
             Matcher matcher = Pattern.compile("").matcher("").usePattern(Pattern.compile("[^\\w]"));
             int lastEnd = 0;
