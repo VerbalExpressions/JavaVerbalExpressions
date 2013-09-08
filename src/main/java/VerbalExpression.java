@@ -258,6 +258,15 @@ class VerbalExpression {
     public boolean test(String toTest) {
         return Pattern.compile(this.pattern, this.modifiers).matcher(toTest).find();
     }
+    
+    public String getText(String toTest) {
+        Matcher m = Pattern.compile(this.pattern).matcher(toTest);
+        StringBuilder result = new StringBuilder();
+        while (m.find()){
+            result.append(m.group());
+        }
+        return result.toString();
+    }    
 
     public String toString() {
         return this.pattern.toString();
