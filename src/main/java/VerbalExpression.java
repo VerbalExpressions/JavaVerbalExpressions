@@ -1,42 +1,47 @@
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class VerbalExpression {
-    private String prefixes = "", source = "", suffixes = "", pattern = "";
+	private final StringBuilder source = new StringBuilder();
+    private String prefixes = "", suffixes = "", pattern = "";
     private int modifiers = Pattern.MULTILINE;
 
     public VerbalExpression () {
         this.updatePattern();
     }
 
-    private String sanitize(String value) {
-        Matcher matcher = Pattern.compile("").matcher("").usePattern(Pattern.compile("[^\\w]"));
+    private String sanitize(final String value) {
+        final Matcher matcher = Pattern.compile("").matcher("").usePattern(Pattern.compile("[^\\w]"));
         int lastEnd = 0;
-        String result = "";
+        final StringBuilder resultBuilder = new StringBuilder();
         matcher.reset(value);
         boolean matcherCalled = false;
         while (matcher.find()) {
             matcherCalled = true;
-            if (matcher.start() != lastEnd) result += value.substring(lastEnd, matcher.start());
-            result += "\\" + value.substring(matcher.start(), matcher.end());
+            if (matcher.start() != lastEnd) {
+            	resultBuilder.append(value.substring(lastEnd, matcher.start()));
+            }
+            resultBuilder.append("\\");
+            resultBuilder.append(value.substring(matcher.start(), matcher.end()));
             lastEnd = matcher.end();
         }
         if (!matcherCalled) return value;
-        return result;
+        return resultBuilder.toString();
     }
 
-    public VerbalExpression add(String value) {
-        this.source += value;
+    public VerbalExpression add(final String value) {
+    	source.append(value);
         return this.updatePattern();
     }
 
     public VerbalExpression updatePattern() {
-        Pattern p = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
+    	final String regex = this.prefixes + this.source.toString() + this.suffixes;
+        final Pattern p = Pattern.compile(regex, this.modifiers);
         this.pattern = p.pattern();
         return this;
     }
 
-    public VerbalExpression startOfLine(boolean enable) {
+    public VerbalExpression startOfLine(final boolean enable) {
         this.prefixes = enable ? "^" : "";
         this.updatePattern();
         return this;
@@ -46,7 +51,7 @@ class VerbalExpression {
         return startOfLine(true);
     }
 
-    public VerbalExpression endOfLine(boolean enable) {
+    public VerbalExpression endOfLine(final boolean enable) {
         this.suffixes = enable ? "$" : "";
         this.updatePattern();
         return this;
@@ -62,7 +67,7 @@ class VerbalExpression {
         return this;
     }
 
-    public VerbalExpression find(String value) {
+    public VerbalExpression find(final String value) {
         this.then(value);
         return this;
     }
@@ -95,9 +100,12 @@ class VerbalExpression {
         return this;
     }
 
-    public VerbalExpression replace(String source, String value) {
+    public VerbalExpression replace(final String source, final String value) {
         this.updatePattern();
-        this.source.replaceAll(pattern,value);
+        final Matcher matcher = Pattern.compile(this.pattern).matcher(this.source);
+        final String afterReplace = matcher.replaceAll(value);
+        this.source.setLength(0);
+        this.source.append(afterReplace);
         return this;
     }
 
@@ -127,29 +135,31 @@ class VerbalExpression {
         return this;
     }
 
-    public VerbalExpression any(String value) {
+    public VerbalExpression any(final String value) {
         this.anyOf(value);
         return this;
     }
 
-    public VerbalExpression range(Object[] args) {
-        String value = "[";
+    public VerbalExpression range(final Object[] args) {
+    	final StringBuilder valueBuilder = new StringBuilder();
+    	valueBuilder.append("[");
         for(int _from = 0; _from < args.length; _from += 2) {
-            int _to = _from+1;
+            final int _to = _from+1;
             if (args.length <= _to) break;
-            int from = Integer.getInteger(sanitize((String)args[_from]));
-            int to = Integer.getInteger(sanitize((String)args[_to]));
+            final int from = Integer.getInteger(sanitize((String)args[_from]));
+            final int to = Integer.getInteger(sanitize((String)args[_to]));
 
-            value += from + "-" + to;
+            valueBuilder.append(from);
+            valueBuilder.append("-");
+            valueBuilder.append(to);
         }
-
-        value += "]";
-
-        this.add(value);
+        valueBuilder.append("]");
+        
+        this.add(valueBuilder.toString());
         return this;
     }
 
-    public VerbalExpression addModifier(char modifier) {
+    public VerbalExpression addModifier(final char modifier) {
         switch (modifier) {
             case 'd':
                 modifiers |= Pattern.UNIX_LINES;
@@ -180,7 +190,7 @@ class VerbalExpression {
         return this;
     }
 
-    public VerbalExpression removeModifier(char modifier) {
+    public VerbalExpression removeModifier(final char modifier) {
         switch (modifier) {
             case 'd':
                 modifiers ^= Pattern.UNIX_LINES;
@@ -211,7 +221,7 @@ class VerbalExpression {
         return this;
     }
 
-    public VerbalExpression withAnyCase(boolean enable) {
+    public VerbalExpression withAnyCase(final boolean enable) {
         if (enable) this.addModifier( 'i' );
         else this.removeModifier( 'i' );
         this.updatePattern();
@@ -222,7 +232,7 @@ class VerbalExpression {
         return withAnyCase(true);
     }
 
-    public VerbalExpression searchOneLine(boolean enable) {
+    public VerbalExpression searchOneLine(final boolean enable) {
         if (enable) this.removeModifier( 'm' );
         else this.addModifier( 'm' );
         this.updatePattern();
@@ -242,7 +252,7 @@ class VerbalExpression {
         return this;
     }
 
-    public VerbalExpression or(String value) {
+    public VerbalExpression or(final String value) {
         if (this.prefixes.indexOf("(") == -1) this.prefixes += "(";
         if (this.suffixes.indexOf(")") == -1) this.suffixes = ")" + this.suffixes;
 
@@ -251,15 +261,16 @@ class VerbalExpression {
         return this;
     }
 
-    public boolean testExact(String toTest) {
+    public boolean testExact(final String toTest) {
         return Pattern.compile(this.pattern, this.modifiers).matcher(toTest).matches();
     }
 
-    public boolean test(String toTest) {
+    public boolean test(final String toTest) {
         return Pattern.compile(this.pattern, this.modifiers).matcher(toTest).find();
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return this.pattern.toString();
     }
 }
