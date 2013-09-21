@@ -134,17 +134,14 @@ class VerbalExpression {
 
     public VerbalExpression range(Object[] args) {
         String value = "[";
-        for(int _from = 0; _from < args.length; _from += 2) {
-            int _to = _from+1;
-            if (args.length <= _to) break;
-            int from = Integer.getInteger(sanitize((String)args[_from]));
-            int to = Integer.getInteger(sanitize((String)args[_to]));
-
+        for(int _to = 1; _to < args.length; _to += 2) {
+            String from = sanitize((String)args[_to - 1]);
+            String to = sanitize((String)args[_to]);
             value += from + "-" + to;
         }
 
         value += "]";
-
+        
         this.add(value);
         return this;
     }
