@@ -269,6 +269,15 @@ public class VerbalExpression {
     private VerbalExpression(final Builder pBuilder) {
         pattern = pBuilder.pattern;
     }
+    
+    public String getText(String toTest) {
+        Matcher m = pattern.matcher(toTest);
+        StringBuilder result = new StringBuilder();
+        while (m.find()){
+            result.append(m.group());
+        }
+        return result.toString();
+    }    
 
     @Override
     public String toString() {
