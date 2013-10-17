@@ -125,19 +125,14 @@ public class VerbalExpression {
             return this;
         }
 
-        public Builder range(final Object[] pArgs) {
+        public Builder range(String... pArgs) {
             String value = "[";
-            for (int _from = 0; _from < pArgs.length; _from += 2) {
-                int _to = _from + 1;
-                if (pArgs.length <= _to) {
-                    break;
-                }
-                int from = Integer.getInteger(sanitize((String) pArgs[_from]));
-                int to = Integer.getInteger(sanitize((String) pArgs[_to]));
+            for (int _to = 1; _to < pArgs.length; _to += 2) {
+                String from = sanitize((String)pArgs[_to - 1]);
+                String to = sanitize((String)pArgs[_to]);
 
                 value += from + "-" + to;
             }
-
             value += "]";
 
             this.add(value);
