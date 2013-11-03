@@ -1,3 +1,4 @@
+package com.github.VerbalExpressions.JavaVerbalExpressions;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
