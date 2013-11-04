@@ -7,15 +7,16 @@ public class RealWorldUnitTests {
 
     @Test
     public void testUrl() {
-        VerbalExpression testRegex = new VerbalExpression.Builder()
-                .startOfLine()
-                .then("http")
-                .maybe("s")
-                .then("://")
-                .maybe("www.")
-                .anythingButNot(" ")
-                .endOfLine()
-                .build();
+
+    	VerbalExpression testRegex = new VerbalExpression(new PatternBuilder()
+				.startOfLine()
+				.then("http")
+				.maybe("s")
+				.then("://")
+				.maybe("www.")
+				.anythingButNot(" ")
+				.endOfLine()
+				.build());
 
         // Create an example URL
         String testUrl = "https://www.google.com";
