@@ -256,4 +256,9 @@ public class PatternBuilder {
 		return this;
 	}
 
+    @Override
+    public String toString() {
+        return this.getPattern().pattern();
+    }
+
 }
