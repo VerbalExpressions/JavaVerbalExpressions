@@ -46,6 +46,7 @@ public class PatternBuilder {
 	public PatternBuilder build() {
 		pattern = Pattern.compile(this.prefixes + this.source + this.suffixes,
 				this.modifiers);
+		this.prefixes = this.source = this.suffixes = "";
 		return this;
 	}
 
