@@ -37,7 +37,7 @@ String testString = "defzzz";
 //Use VerbalExpression's test() method to test if parts if the string match the regex
 testRegex.test(testString); //true
 testRegex.testExact(testString); //false
-
+System.out.println(testRegex1.getText(testRegex1.toString())); //get matched text
 
 ```														 
 
