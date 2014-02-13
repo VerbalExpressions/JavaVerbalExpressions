@@ -1,49 +1,36 @@
+package verbal.expressions;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VerbalExpression {
 
-    private Pattern pattern;
-
+    private final Pattern pattern;
+    
     public static class Builder {
 
-        private String prefixes = "", source = "", suffixes = "";
+        private StringBuilder prefixes = new StringBuilder();
+        private StringBuilder source = new StringBuilder();
+        private StringBuilder suffixes = new StringBuilder();
         private Pattern pattern;
         private int modifiers = Pattern.MULTILINE;
 
         private String sanitize(final String pValue) {
-            Matcher matcher = Pattern.compile("").matcher("").usePattern(Pattern.compile("[^\\w]"));
-            int lastEnd = 0;
-            String result = "";
-            matcher.reset(pValue);
-            boolean matcherCalled = false;
-            while (matcher.find()) {
-                matcherCalled = true;
-                if (matcher.start() != lastEnd) {
-                    result += pValue.substring(lastEnd, matcher.start());
-                }
-                result += "\\" + pValue.substring(matcher.start(), matcher.end());
-                lastEnd = matcher.end();
-            }
-            if (!matcherCalled) {
-                return pValue;
-            }
-            return result;
+        	return pValue.replaceAll("[\\W]", "\\\\$0");
         }
 
         public Builder add(String pValue) {
-            this.source += pValue;
+            this.source.append(pValue);
             return this;
         }
 
         public VerbalExpression build() {
-            pattern = Pattern.compile(this.prefixes + this.source + this.suffixes, this.modifiers);
+            pattern = Pattern.compile(this.prefixes.toString() + this.source.toString() + this.suffixes, this.modifiers);
             return new VerbalExpression(this);
         }
 
         public Builder startOfLine(boolean pEnable) {
-            this.prefixes = pEnable ? "^" : "";
+            this.prefixes.append(pEnable ? "^" : "");
             return this;
         }
 
@@ -52,7 +39,7 @@ public class VerbalExpression {
         }
 
         public Builder endOfLine(final boolean pEnable) {
-            this.suffixes = pEnable ? "$" : "";
+            this.suffixes.append(pEnable ? "$" : "");
             return this;
         }
 
@@ -236,10 +223,10 @@ public class VerbalExpression {
 
         public Builder or(final String pValue) {
             if (this.prefixes.indexOf("(") == -1) {
-                this.prefixes += "(";
+                this.prefixes.append("(");
             }
             if (this.suffixes.indexOf(")") == -1) {
-                this.suffixes = ")" + this.suffixes;
+                this.suffixes.append(")" + this.suffixes.toString());
             }
 
             this.add(")|(");

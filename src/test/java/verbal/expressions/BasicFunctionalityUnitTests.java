@@ -1,6 +1,9 @@
+package verbal.expressions;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Ignore;
+
+import verbal.expressions.VerbalExpression;
 import static org.junit.Assert.*;
 
 public class BasicFunctionalityUnitTests {

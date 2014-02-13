@@ -1,6 +1,10 @@
+package verbal.expressions;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
+
+import verbal.expressions.VerbalExpression;
 
 public class RealWorldUnitTests {
 
