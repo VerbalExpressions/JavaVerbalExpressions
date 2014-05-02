@@ -1,8 +1,11 @@
+package verbal.expressions;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
-public class RealWorldUnitTests {
+
+public class RealWorldUnitTest {
 
     @Test
     public void testUrl() {

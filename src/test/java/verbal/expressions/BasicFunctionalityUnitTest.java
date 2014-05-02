@@ -1,9 +1,9 @@
+package verbal.expressions;
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.Ignore;
+
 import static org.junit.Assert.*;
 
-public class BasicFunctionalityUnitTests {
+public class BasicFunctionalityUnitTest {
     @Test
     public void testSomething() {
         VerbalExpression testRegex = new VerbalExpression.Builder().something().build();
