@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/VerbalExpressions/JavaVerbalExpressions.png)](https://travis-ci.org/VerbalExpressions/JavaVerbalExpressions)
 JavaVerbalExpressions
 =====================
 VerbalExpressions is a Java library that helps to construct difficult regular expressions - ported from the wonderful [JSVerbalExpressions](https://github.com/VerbalExpressions/JSVerbalExpressions).
