@@ -26,8 +26,8 @@
 
     <scm>
         <url>https://github.com/lanwen/JavaVerbalExpressions.git</url>
-        <connection>git@github.com:lanwen/JavaVerbalExpressions.git</connection>
-        <developerConnection>git@github.com:lanwen/JavaVerbalExpressions.git</developerConnection>
+        <connection>scm:git@github.com:lanwen/JavaVerbalExpressions.git</connection>
+        <developerConnection>scm:git@github.com:lanwen/JavaVerbalExpressions.git</developerConnection>
     </scm>
 
 
