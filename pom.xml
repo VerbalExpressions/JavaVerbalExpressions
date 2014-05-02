@@ -7,9 +7,10 @@
         <version>9</version>
     </parent>
 
-    <groupId>ru.lanwen.verbalexpressions</groupId>
+    <groupId>ru.lanwen.verbalregex</groupId>
     <artifactId>java-verbal-expressions</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <packaging>jar</packaging>
 
     <name>JavaVerbalExpressions</name>

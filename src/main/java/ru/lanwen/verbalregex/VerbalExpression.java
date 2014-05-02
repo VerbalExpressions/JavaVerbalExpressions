@@ -1,4 +1,4 @@
-package verbal.expressions;
+package ru.lanwen.verbalregex;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +25,8 @@ public class VerbalExpression {
         }
 
         public VerbalExpression build() {
-            pattern = Pattern.compile(this.prefixes.toString() + this.source.toString() + this.suffixes, this.modifiers);
+            pattern = Pattern.compile(new StringBuilder(prefixes)
+                    .append(source).append(suffixes).toString(), modifiers);
             return new VerbalExpression(this);
         }
 
