@@ -14,10 +14,8 @@
     <packaging>jar</packaging>
 
     <name>JavaVerbalExpressions</name>
-    <description>VerbalExpressions is a Java library that helps to construct difficult regular expressions -
-        ported from the wonderful JSVerbalExpressions
-    </description>
-    <url>https://github.com/lanwen/JavaVerbalExpressions</url>
+    <description>VerbalExpressions is a Java library that helps to construct difficult regular expressions</description>
+    <url>https://github.com/VerbalExpressions/JavaVerbalExpressions</url>
 
 
     <properties>
@@ -26,23 +24,25 @@
 
 
     <scm>
-        <url>https://github.com/lanwen/JavaVerbalExpressions.git</url>
-        <connection>scm:git@github.com:lanwen/JavaVerbalExpressions.git</connection>
-        <developerConnection>scm:git@github.com:lanwen/JavaVerbalExpressions.git</developerConnection>
+        <url>git@github.com:VerbalExpressions/JavaVerbalExpressions.git</url>
+        <connection>scm:git:git@github.com:VerbalExpressions/JavaVerbalExpressions.git</connection>
+        <developerConnection>scm:git:git@github.com:VerbalExpressions/JavaVerbalExpressions.git</developerConnection>
     </scm>
 
 
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
-            <url>https://github.com/lanwen/JavaVerbalExpressions/blob/master/LICENSE</url>
+            <url>https://raw.githubusercontent.com/VerbalExpressions/JavaVerbalExpressions/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <developers>
         <developer>
-            <id>EmilS</id>
+            <id>lanwen</id>
+            <name>Kirill Merkushev</name>
+            <email>lanwen+github@yandex.ru</email>
         </developer>
     </developers>
 
@@ -92,4 +92,5 @@
             </plugin>
         </plugins>
     </reporting>
+
 </project>
