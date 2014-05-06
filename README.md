@@ -1,11 +1,36 @@
-[![Build Status](https://travis-ci.org/VerbalExpressions/JavaVerbalExpressions.png)](https://travis-ci.org/VerbalExpressions/JavaVerbalExpressions)
 JavaVerbalExpressions
 =====================
-VerbalExpressions is a Java library that helps to construct difficult regular expressions - ported from the wonderful [JSVerbalExpressions](https://github.com/VerbalExpressions/JSVerbalExpressions).
+[<img src="http://img.shields.io/github/release/VerbalExpressions/JavaVerbalExpressions.svg?style=flat">](https://github.com/VerbalExpressions/JavaVerbalExpressions/releases/latest)
+[<img src="http://img.shields.io/badge/ported%20from-%20JSVerbalExpressions-orange.svg?style=flat">](https://github.com/VerbalExpressions/JSVerbalExpressions)
+
+VerbalExpressions is a Java library that helps to construct difficult regular expressions.
+
+
+
+##Getting Started
+
+Maven Dependency:
+
+```xml
+<dependency>
+  <groupId>ru.lanwen.verbalregex</groupId>
+  <artifactId>java-verbal-expressions</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+You can use *SNAPSHOT* dependency with adding to `pom.xml`:
+```xml
+<repositories>
+  <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </repository>
+</repositories>
+```
 
 ##Examples
 ```java
-
 VerbalExpression testRegex = new VerbalExpression.Builder()
 	           					 .startOfLine()
 	           					 .then("http")
@@ -23,7 +48,7 @@ String url = "https://www.google.com";
 // the regex
 testRegex.testExact(url); //True
 
-testRegex.toString(); // Ouputs the regex used: 
+testRegex.toString(); // Outputs the regex used:
 					  // ^(http)(s)?(\:\/\/)(www\.)?([^\ ]*)$
 
 VerbalExpression testRegex = new VerbalExpression.Builder()
@@ -37,9 +62,7 @@ String testString = "defzzz";
 //Use VerbalExpression's test() method to test if parts if the string match the regex
 testRegex.test(testString); //true
 testRegex.testExact(testString); //false
-
-
-```														 
+```
 
 ## Other implementations  
 You can view all implementations on [VerbalExpressions.github.io](http://VerbalExpressions.github.io)

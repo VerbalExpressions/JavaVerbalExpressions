@@ -1,9 +1,10 @@
+package ru.lanwen.verbalregex;
+
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.Ignore;
+
 import static org.junit.Assert.*;
 
-public class BasicFunctionalityUnitTests {
+public class BasicFunctionalityUnitTest {
     @Test
     public void testSomething() {
         VerbalExpression testRegex = new VerbalExpression.Builder().something().build();
@@ -198,17 +199,17 @@ public class BasicFunctionalityUnitTests {
         assertTrue("b is on the second line but we are only searching the first", testRegex.test("a\nb"));
     }
 
-   @Test
-   public void testGetText () {
-       String testString = "123 https://www.google.com 456";
-       VerbalExpression testRegex = new VerbalExpression.Builder().add("http")
-               .maybe("s")
-               .then("://")
-               .then("www.")
-               .anythingButNot(" ")
-               .add("com").build();
-       assertEquals(testRegex.getText(testString), "https://www.google.com");
-       
-   }
+    @Test
+    public void testGetText() {
+        String testString = "123 https://www.google.com 456";
+        VerbalExpression testRegex = new VerbalExpression.Builder().add("http")
+                .maybe("s")
+                .then("://")
+                .then("www.")
+                .anythingButNot(" ")
+                .add("com").build();
+        assertEquals(testRegex.getText(testString), "https://www.google.com");
+
+    }
 
 }
