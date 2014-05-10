@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class VerbalExpression {
 
     private final Pattern pattern;
-    
+
     public static class Builder {
 
         private StringBuilder prefixes = new StringBuilder();
@@ -15,7 +15,11 @@ public class VerbalExpression {
         private int modifiers = Pattern.MULTILINE;
 
         private String sanitize(final String pValue) {
-        	return pValue.replaceAll("[\\W]", "\\\\$0");
+            return pValue.replaceAll("[\\W]", "\\\\$0");
+        }
+
+        private int countOccurrencesOf(String where, String what) {
+            return (where.length() - where.replace(what, "").length()) / what.length();
         }
 
         public VerbalExpression build() {
@@ -48,7 +52,7 @@ public class VerbalExpression {
         }
 
         public Builder then(String pValue) {
-            this.add("(" + sanitize(pValue) + ")");
+            this.add("(?:" + sanitize(pValue) + ")");
             return this;
         }
 
@@ -58,32 +62,31 @@ public class VerbalExpression {
         }
 
         public Builder maybe(final String pValue) {
-            this.add("(" + sanitize(pValue) + ")?");
-            return this;
+            return this.then(pValue).add("?");
         }
 
         public Builder anything() {
-            this.add("(.*)");
+            this.add("(?:.*)");
             return this;
         }
 
         public Builder anythingButNot(final String pValue) {
-            this.add("([^" + sanitize(pValue) + "]*)");
+            this.add("(?:[^" + sanitize(pValue) + "]*)");
             return this;
         }
 
         public Builder something() {
-            this.add("(.+)");
+            this.add("(?:.+)");
             return this;
         }
 
         public Builder somethingButNot(final String pValue) {
-            this.add("([^" + sanitize(pValue) + "]+)");
+            this.add("(?:[^" + sanitize(pValue) + "]+)");
             return this;
         }
 
         public Builder lineBreak() {
-            this.add("(\\n|(\\r\\n))");
+            this.add("(?:\\n|(\\r\\n))");
             return this;
         }
 
@@ -115,8 +118,8 @@ public class VerbalExpression {
         public Builder range(String... pArgs) {
             String value = "[";
             for (int _to = 1; _to < pArgs.length; _to += 2) {
-                String from = sanitize((String)pArgs[_to - 1]);
-                String to = sanitize((String)pArgs[_to]);
+                String from = sanitize((String) pArgs[_to - 1]);
+                String to = sanitize((String) pArgs[_to]);
 
                 value += from + "-" + to;
             }
@@ -209,31 +212,81 @@ public class VerbalExpression {
         }
 
         public Builder multiple(final String pValue) {
-            String value = this.sanitize(pValue);
-            switch (value.charAt(0)) {
+            switch (pValue.charAt(0)) {
                 case '*':
                 case '+':
-                    break;
+                    return this.add(pValue);
                 default:
-                    value += '+';
+                    return this.add(this.sanitize(pValue) + '+');
             }
-            this.add(value);
+        }
+
+        /**
+         * Add count of previous group
+         * for example:
+         * .find("w").count(3) // produce - (?:w){3}
+         *
+         * @param count - number of occurrences of previous group in expression
+         * @return this Builder
+         */
+        public Builder count(int count) {
+            this.source.append("{").append(count).append("}");
+            return this;
+        }
+
+        /**
+         * Produce range count
+         * for example:
+         * .find("w").count(1, 3) // produce (?:w){1,3}
+         *
+         * @param from - minimal number of occurrences
+         * @param to   - max number of occurrences
+         * @return this Builder
+         * @see #count(int)
+         */
+        public Builder count(int from, int to) {
+            this.source.append("{").append(from).append(",").append(to).append("}");
             return this;
         }
 
         public Builder or(final String pValue) {
-            if (this.prefixes.indexOf("(") == -1) {
-                this.prefixes.append("(");
-            }
-            if (this.suffixes.indexOf(")") == -1) {
-                this.suffixes.append(")" + this.suffixes.toString());
+            this.prefixes.append("(");
+
+            int opened = countOccurrencesOf(this.prefixes.toString(), "(");
+            int closed = countOccurrencesOf(this.suffixes.toString(), ")");
+
+            if (opened >= closed) {
+                this.suffixes = new StringBuilder(")" + this.suffixes.toString());
             }
 
-            this.add(")|(");
+            this.add(")|(?:");
             if (pValue != null) {
                 this.then(pValue);
             }
             return this;
+        }
+
+        /**
+         * Adds capture - open brace to current position and closed to suffixes
+         * @return this builder
+         */
+        public Builder capture() {
+            this.suffixes.append(")");
+            return this.add("(");
+        }
+
+        /**
+         * Close brace for previous capture and remove last closed brace from suffixes
+         * Can be used to continue build regex after capture or to add multiply captures
+         * @return this builder
+         */
+        public Builder endCapture() {
+            if(this.suffixes.length() > 0 && this.suffixes.indexOf(")") + 1 == this.suffixes.length()) {
+                this.suffixes.setLength(suffixes.length() - 1);
+                return this.add(")");
+            } else {
+                throw new IllegalStateException("Can't end capture when it not started");
+            }
         }
     }
 
@@ -256,12 +309,16 @@ public class VerbalExpression {
     private VerbalExpression(final Pattern pattern) {
         this.pattern = pattern;
     }
-    
+
     public String getText(String toTest) {
+        return getText(toTest, 0);
+    }
+
+    public String getText(String toTest, int group) {
         Matcher m = pattern.matcher(toTest);
         StringBuilder result = new StringBuilder();
-        while (m.find()){
-            result.append(m.group());
+        while (m.find()) {
+            result.append(m.group(group));
         }
         return result.toString();
     }

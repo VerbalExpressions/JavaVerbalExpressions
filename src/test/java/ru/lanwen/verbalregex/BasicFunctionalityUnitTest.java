@@ -2,6 +2,8 @@ package ru.lanwen.verbalregex;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class BasicFunctionalityUnitTest {
@@ -86,7 +88,7 @@ public class BasicFunctionalityUnitTest {
                 .maybe("b")
                 .build();
 
-        assertEquals("Regex isn't correct", testRegex.toString(), "^(a)(b)?");
+        assertThat("Regex isn't correct", testRegex.toString(), equalTo("^(?:a)(?:b)?"));
 
         assertTrue("Maybe has a 'b' after an 'a'", testRegex.test("acb"));
         assertTrue("Maybe has a 'b' after an 'a'", testRegex.test("abc"));
@@ -133,16 +135,21 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testBr() {
-        VerbalExpression testRegex = new VerbalExpression.Builder()
+        VerbalExpression testRegexBr = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("abc")
+                .br()
+                .then("def")
+                .build();
+
+        VerbalExpression testRegexLineBr = new VerbalExpression.Builder()
                 .startOfLine()
                 .then("abc")
                 .lineBreak()
                 .then("def")
                 .build();
 
-        assertTrue("abc then line break then def", testRegex.test("abc\r\ndef"));
-        assertTrue("abc then line break then def", testRegex.test("abc\ndef"));
-        assertFalse("abc then line break then space then def", testRegex.test("abc\r\n def"));
+       assertThat(".br() differs from .lineBreak()", testRegexBr.toString(), equalTo(testRegexLineBr.toString()));
     }
 
     @Test
@@ -210,6 +217,93 @@ public class BasicFunctionalityUnitTest {
                 .add("com").build();
         assertEquals(testRegex.getText(testString), "https://www.google.com");
 
+    }
+
+    @Test
+    public void testStartCapture() {
+        String text = "aaabcd";
+        VerbalExpression regex = VerbalExpression.regex()
+                .find("a").count(3)
+                .capture().find("b").anything().build();
+
+        assertThat("regex don't match string", regex.getText(text), equalTo(text));
+        assertThat("can't get first captured group", regex.getText(text, 1), equalTo("bcd"));
+    }
+
+    @Test
+    public void shouldReturnEmptyStringWhenNoGroupFound() {
+        String text = "abc";
+        VerbalExpression regex = VerbalExpression.regex().find("d").capture().find("e").build();
+
+        assertThat("regex don't match string", regex.getText(text), equalTo(""));
+        assertThat("first captured group not empty string", regex.getText(text, 1), equalTo(""));
+        assertThat("second captured group not empty string", regex.getText(text, 2), equalTo(""));
+    }
+
+    @Test
+    public void testCountWithRange() {
+        String text4c = "abcccce";
+        String text2c = "abcce";
+        String text1c = "abce";
+
+        VerbalExpression regex = VerbalExpression.regex().find("c").count(2, 3).build();
+
+        assertThat("regex don't match string", regex.getText(text4c), equalTo("ccc"));
+        assertThat("regex don't match string", regex.getText(text2c), equalTo("cc"));
+        assertThat("regex don't match string", regex.test(text1c), is(false));
+    }
+
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void shouldExceptionWhenTryGetMoreThanCapturedGroup() {
+        String text = "abc";
+        VerbalExpression regex = VerbalExpression.regex().find("b").capture().find("c").build();
+
+        regex.getText(text, 2);
+    }
+
+    @Test
+    public void testEndCapture() {
+        String text = "aaabcd";
+        VerbalExpression regex = VerbalExpression.regex()
+                .find("a")
+                .capture().find("b").anything().endCapture().then("cd").build();
+
+        assertThat(regex.getText(text), equalTo("abcd"));
+        assertThat("can't get first captured group", regex.getText(text, 1), equalTo("b"));
+    }
+
+
+    @Test
+    public void testMultiplyCapture() {
+        String text = "aaabcd";
+        VerbalExpression regex = VerbalExpression.regex()
+                .find("a").count(1)
+                .capture().find("b").endCapture().anything().capture().find("d").build();
+
+        assertThat("can't get first captured group", regex.getText(text, 1), equalTo("b"));
+        assertThat("can't get second captured group", regex.getText(text, 2), equalTo("d"));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testEndCaptureOnEmptyRegex() {
+        VerbalExpression.regex().endCapture().build();
+    }
+
+    @Test
+    public void testOrWithCapture() {
+        VerbalExpression testRegex = VerbalExpression.regex()
+                .capture()
+                .find("abc")
+                .or("def")
+                .build();
+        assertTrue("Starts with abc or def", testRegex.test("defzzz"));
+        assertTrue("Starts with abc or def", testRegex.test("abczzz"));
+        assertFalse("Doesn't start with abc or def", testRegex.testExact("xyzabcefg"));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
+        assertThat(testRegex.getText("xxxdefzzz", 2), equalTo("null"));
+        assertThat(testRegex.getText("xxxabcdefzzz", 2), equalTo("abcnull"));
     }
 
 }

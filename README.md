@@ -48,7 +48,7 @@ String url = "https://www.google.com";
 testRegex.testExact(url); //True
 
 testRegex.toString(); // Outputs the regex used:
-					  // ^(http)(s)?(\:\/\/)(www\.)?([^\ ]*)$
+					  // ^(?:http)(?:s)?(?:\:\/\/)(?:www\.)?(?:[^\ ]*)$
 
 VerbalExpression testRegex = VerbalExpression.regex()
                                  .startOfLine()
@@ -59,8 +59,9 @@ VerbalExpression testRegex = VerbalExpression.regex()
 String testString = "defzzz";
 
 //Use VerbalExpression's test() method to test if parts if the string match the regex
-testRegex.test(testString); //true
-testRegex.testExact(testString); //false
+testRegex.test(testString);       // true
+testRegex.testExact(testString);  // false
+testRegex.getText(testString);    // returns: def
 ```
 
 Builder can be cloned:
