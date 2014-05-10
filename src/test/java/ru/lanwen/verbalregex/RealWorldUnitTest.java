@@ -29,7 +29,7 @@ public class RealWorldUnitTest {
 
         assertThat("Regex doesn't match same regex as in example",
                 testRegex.toString(),
-                equalTo("^(http)(s)?(\\:\\/\\/)(www\\.)?([^\\ ]*)$"));
+                equalTo("^(?:http)(?:s)?(?:\\:\\/\\/)(?:www\\.)?(?:[^\\ ]*)$"));
     }
 
     @Test
