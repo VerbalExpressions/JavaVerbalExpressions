@@ -31,7 +31,7 @@ You can use *SNAPSHOT* dependency with adding to `pom.xml`:
 
 ##Examples
 ```java
-VerbalExpression testRegex = new VerbalExpression.Builder()
+VerbalExpression testRegex = VerbalExpression.regex()
 	           					 .startOfLine()
 	           					 .then("http")
 	           					 .maybe("s")
@@ -44,14 +44,13 @@ VerbalExpression testRegex = new VerbalExpression.Builder()
 // Create an example URL
 String url = "https://www.google.com";
 
-// Use VerbalExpression's testExact() method to test if the entire string matches
-// the regex
+// Use VerbalExpression's testExact() method to test if the entire string matches the regex
 testRegex.testExact(url); //True
 
 testRegex.toString(); // Outputs the regex used:
 					  // ^(http)(s)?(\:\/\/)(www\.)?([^\ ]*)$
 
-VerbalExpression testRegex = new VerbalExpression.Builder()
+VerbalExpression testRegex = VerbalExpression.regex()
                                  .startOfLine()
                                  .then("abc")
                                  .or("def")
@@ -62,6 +61,12 @@ String testString = "defzzz";
 //Use VerbalExpression's test() method to test if parts if the string match the regex
 testRegex.test(testString); //true
 testRegex.testExact(testString); //false
+```
+
+Builder can be cloned:
+```java
+// Produce: (.*)$
+VerbalExpression regex = regex(regex().anything().addModifier('i')).endOfLine().build();
 ```
 
 ## Other implementations  

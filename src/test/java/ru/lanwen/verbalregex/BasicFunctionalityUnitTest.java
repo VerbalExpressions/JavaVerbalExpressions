@@ -177,7 +177,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testSearchOneLine() {
-        VerbalExpression testRegex = new VerbalExpression.Builder()
+        VerbalExpression testRegex = VerbalExpression.regex()
                 .startOfLine()
                 .then("a")
                 .br()

@@ -12,22 +12,21 @@ public class VerbalExpression {
         private StringBuilder prefixes = new StringBuilder();
         private StringBuilder source = new StringBuilder();
         private StringBuilder suffixes = new StringBuilder();
-        private Pattern pattern;
         private int modifiers = Pattern.MULTILINE;
 
         private String sanitize(final String pValue) {
         	return pValue.replaceAll("[\\W]", "\\\\$0");
         }
 
+        public VerbalExpression build() {
+            Pattern pattern = Pattern.compile(new StringBuilder(prefixes)
+                    .append(source).append(suffixes).toString(), modifiers);
+            return new VerbalExpression(pattern);
+        }
+
         public Builder add(String pValue) {
             this.source.append(pValue);
             return this;
-        }
-
-        public VerbalExpression build() {
-            pattern = Pattern.compile(new StringBuilder(prefixes)
-                    .append(source).append(suffixes).toString(), modifiers);
-            return new VerbalExpression(this);
         }
 
         public Builder startOfLine(boolean pEnable) {
@@ -254,8 +253,8 @@ public class VerbalExpression {
         return ret;
     }
 
-    private VerbalExpression(final Builder pBuilder) {
-        pattern = pBuilder.pattern;
+    private VerbalExpression(final Pattern pattern) {
+        this.pattern = pattern;
     }
     
     public String getText(String toTest) {
@@ -265,7 +264,22 @@ public class VerbalExpression {
             result.append(m.group());
         }
         return result.toString();
-    }    
+    }
+
+    public static Builder regex(final Builder pBuilder) {
+        Builder builder = new Builder();
+
+        builder.prefixes = new StringBuilder(pBuilder.prefixes);
+        builder.source = new StringBuilder(pBuilder.source);
+        builder.suffixes = new StringBuilder(pBuilder.suffixes);
+        builder.modifiers = pBuilder.modifiers;
+
+        return builder;
+    }
+
+    public static Builder regex() {
+        return new Builder();
+    }
 
     @Override
     public String toString() {
