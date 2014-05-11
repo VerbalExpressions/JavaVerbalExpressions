@@ -280,7 +280,7 @@ public class VerbalExpression {
          * @return this builder
          */
         public Builder endCapture() {
-            if(this.suffixes.length() > 0 && this.suffixes.indexOf(")") + 1 == this.suffixes.length()) {
+            if(this.suffixes.indexOf(")") != -1) {
                 this.suffixes.setLength(suffixes.length() - 1);
                 return this.add(")");
             } else {
