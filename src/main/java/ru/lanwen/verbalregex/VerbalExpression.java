@@ -116,17 +116,16 @@ public class VerbalExpression {
         }
 
         public Builder range(String... pArgs) {
-            String value = "[";
-            for (int _to = 1; _to < pArgs.length; _to += 2) {
-                String from = sanitize((String) pArgs[_to - 1]);
-                String to = sanitize((String) pArgs[_to]);
+            StringBuilder value = new StringBuilder("[");
+            for (int firstInPairPosition = 1; firstInPairPosition < pArgs.length; firstInPairPosition += 2) {
+                String from = sanitize(pArgs[firstInPairPosition - 1]);
+                String to = sanitize(pArgs[firstInPairPosition]);
 
-                value += from + "-" + to;
+                value.append(from).append("-").append(to);
             }
-            value += "]";
+            value.append("]");
 
-            this.add(value);
-            return this;
+            return this.add(value.toString());
         }
 
         public Builder addModifier(final char pModifier) {
