@@ -4,7 +4,7 @@ import org.junit.Test;
 
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -33,29 +33,21 @@ public class RealWorldUnitTest {
     }
 
     @Test
-    public void staticFabricsRetunSameAsConstructorExpressions() {
-        VerbalExpression regexViaFactory = VerbalExpression.regex().anything().build();
-        VerbalExpression regexViaConstructor = new VerbalExpression.Builder().anything().build();
+    public void testTelephoneNumber() {
+        VerbalExpression regex = VerbalExpression.regex()
+                .startOfLine()
+                .then("+")
+                .capture().range("0", "9").count(3).maybe("-").maybe(" ").endCapture()
+                .count(3)
+                .endOfLine().build();
 
-        assertThat("Factory builder method produce not same as constructor regex",
-                regexViaFactory.toString(), equalTo(regexViaConstructor.toString()));
-    }
+        String phoneWithSpace = "+097 234 243";
+        String phoneWithoutSpace = "+097234243";
+        String phoneWithDash = "+097-234-243";
 
-    @Test
-    public void clonedBuilderEqualsOriginal() {
-        VerbalExpression.Builder builder = VerbalExpression.regex().anything().addModifier('i');
-        VerbalExpression.Builder clonedBuilder = VerbalExpression.regex(builder);
+        assertThat(regex.testExact(phoneWithSpace), is(true));
+        assertThat(regex.testExact(phoneWithoutSpace), is(true));
+        assertThat(regex.testExact(phoneWithDash), is(true));
 
-        assertThat("Cloned builder changed after creating new one",
-                builder.build().toString(), equalTo(clonedBuilder.build().toString()));
-    }
-
-    @Test
-    public void clonedBuilderCantChangeOriginal() {
-        VerbalExpression.Builder builder = VerbalExpression.regex().anything().addModifier('i');
-        VerbalExpression.Builder clonedBuilder = VerbalExpression.regex(builder).endOfLine();
-
-        assertThat("Cloned builder changed after creating new one",
-                builder.build().toString(), not(clonedBuilder.build().toString()));
     }
 }

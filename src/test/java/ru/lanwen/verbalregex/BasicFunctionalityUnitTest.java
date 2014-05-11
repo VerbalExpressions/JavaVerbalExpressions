@@ -68,6 +68,25 @@ public class BasicFunctionalityUnitTest {
     }
 
     @Test
+    public void testStartOfLineFalse() {
+        VerbalExpression testRegex = VerbalExpression.regex()
+                .startOfLine(false)
+                .then("a")
+                .build();
+        assertThat(testRegex.test("ba"), is(true));
+        assertThat(testRegex.test("ab"), is(true));
+    }
+
+    @Test
+    public void testRangeWithMultiplyRanges() throws Exception {
+        VerbalExpression regex = VerbalExpression.regex().range("a", "z", "A", "Z").build();
+
+        assertThat("Regex with multi-range differs from expected", regex.toString(), equalTo("[a-zA-Z]"));
+        assertThat("Regex don't matches letter", regex.test("b"), is(true));
+        assertThat("Regex matches digit, but should match only letter", regex.test("1"), is(false));
+    }
+
+    @Test
     public void testEndOfLine() {
         VerbalExpression testRegex = new VerbalExpression.Builder()
                 .find("a")
@@ -79,6 +98,18 @@ public class BasicFunctionalityUnitTest {
         assertFalse("Ends with a", testRegex.test(null));
         assertFalse("Doesn't end with a", testRegex.test("ab"));
     }
+
+
+    @Test
+    public void testEndOfLineIsFalse() {
+        VerbalExpression testRegex = VerbalExpression.regex()
+                .find("a")
+                .endOfLine(false)
+                .build();
+        assertThat(testRegex.test("ba"), is(true));
+        assertThat(testRegex.test("ab"), is(true));
+    }
+
 
     @Test
     public void testMaybe() {
@@ -105,6 +136,15 @@ public class BasicFunctionalityUnitTest {
 
         assertTrue("Has an x, y, or z after a", testRegex.test("ay"));
         assertFalse("Doesn't have an x, y, or z after a", testRegex.test("abc"));
+    }
+
+
+    @Test
+    public void testAnySameAsAnyOf() {
+        VerbalExpression any = VerbalExpression.regex().any("abc").build();
+        VerbalExpression anyOf = VerbalExpression.regex().anyOf("abc").build();
+
+        assertThat("any differs from anyOf", any.toString(), equalTo(anyOf.toString()));
     }
 
     @Test
@@ -183,6 +223,18 @@ public class BasicFunctionalityUnitTest {
     }
 
     @Test
+    public void testWithAnyCaseIsFalse() {
+        VerbalExpression testRegex = VerbalExpression.regex()
+                .withAnyCase()
+                .startOfLine()
+                .then("a")
+                .withAnyCase(false)
+                .build();
+
+        assertThat(testRegex.test("A"), is(false));
+    }
+
+    @Test
     public void testSearchOneLine() {
         VerbalExpression testRegex = VerbalExpression.regex()
                 .startOfLine()
@@ -253,16 +305,7 @@ public class BasicFunctionalityUnitTest {
         assertThat("regex don't match string", regex.test(text1c), is(false));
     }
 
-
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void shouldExceptionWhenTryGetMoreThanCapturedGroup() {
-        String text = "abc";
-        VerbalExpression regex = VerbalExpression.regex().find("b").capture().find("c").build();
-
-        regex.getText(text, 2);
-    }
-
-    @Test
+   @Test
     public void testEndCapture() {
         String text = "aaabcd";
         VerbalExpression regex = VerbalExpression.regex()
@@ -284,12 +327,6 @@ public class BasicFunctionalityUnitTest {
         assertThat("can't get first captured group", regex.getText(text, 1), equalTo("b"));
         assertThat("can't get second captured group", regex.getText(text, 2), equalTo("d"));
     }
-
-    @Test(expected = IllegalStateException.class)
-    public void testEndCaptureOnEmptyRegex() {
-        VerbalExpression.regex().endCapture().build();
-    }
-
     @Test
     public void testOrWithCapture() {
         VerbalExpression testRegex = VerbalExpression.regex()
