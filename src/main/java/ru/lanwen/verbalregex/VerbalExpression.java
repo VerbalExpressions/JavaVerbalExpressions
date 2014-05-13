@@ -52,13 +52,11 @@ public class VerbalExpression {
         }
 
         public Builder then(String pValue) {
-            this.add("(?:" + sanitize(pValue) + ")");
-            return this;
+            return this.add("(?:" + sanitize(pValue) + ")");
         }
 
         public Builder find(String value) {
-            this.then(value);
-            return this;
+            return this.then(value);
         }
 
         public Builder maybe(final String pValue) {
@@ -66,44 +64,96 @@ public class VerbalExpression {
         }
 
         public Builder anything() {
-            this.add("(?:.*)");
-            return this;
+            return this.add("(?:.*)");
         }
 
         public Builder anythingButNot(final String pValue) {
-            this.add("(?:[^" + sanitize(pValue) + "]*)");
-            return this;
+            return this.add("(?:[^" + sanitize(pValue) + "]*)");
         }
 
         public Builder something() {
-            this.add("(?:.+)");
-            return this;
+            return this.add("(?:.+)");
         }
 
         public Builder somethingButNot(final String pValue) {
-            this.add("(?:[^" + sanitize(pValue) + "]+)");
-            return this;
+            return this.add("(?:[^" + sanitize(pValue) + "]+)");
         }
 
         public Builder lineBreak() {
-            this.add("(?:\\n|(\\r\\n))");
-            return this;
+            return this.add("(?:\\n|(\\r\\n))");
         }
 
         public Builder br() {
-            this.lineBreak();
-            return this;
+            return this.lineBreak();
         }
 
+        /**
+         * @return tab character ('\u0009')
+         */
         public Builder tab() {
-            this.add("\\t");
-            return this;
+            return this.add("(?:\\t)");
         }
 
+        /**
+         * @return word, same as [a-zA-Z_0-9]+
+         */
         public Builder word() {
-            this.add("\\w+");
-            return this;
+            return this.add("(?:\\w+)");
         }
+
+
+        /*
+           --- Predefined character classes
+         */
+
+        /**
+         * @return word character, same as [a-zA-Z_0-9]
+         */
+        public Builder wordChar() {
+            return this.add("(?:\\w)");
+        }
+
+
+        /**
+         * @return non-word character: [^\w]
+         */
+        public Builder nonWordChar() {
+            return this.add("(?:\\W)");
+        }
+
+        /**
+         * @return non-digit: [^0-9]
+         */
+        public Builder nonDigit() {
+            return this.add("(?:\\D)");
+        }
+
+        /**
+         * @return same as [0-9]
+         */
+        public Builder digit() {
+            return this.add("(?:\\d)");
+        }
+
+        /**
+         * @return whitespace character, same as [ \t\n\x0B\f\r]
+         */
+        public Builder space() {
+            return this.add("(?:\\s)");
+        }
+
+        /**
+         * @return non-whitespace character: [^\s]
+         */
+        public Builder nonSpace() {
+            return this.add("(?:\\S)");
+        }
+
+
+        /*
+           --- / end of predefined character classes
+         */
+
 
         public Builder anyOf(final String pValue) {
             this.add("[" + sanitize(pValue) + "]");
@@ -111,8 +161,7 @@ public class VerbalExpression {
         }
 
         public Builder any(final String value) {
-            this.anyOf(value);
-            return this;
+            return this.anyOf(value);
         }
 
         public Builder range(String... pArgs) {
