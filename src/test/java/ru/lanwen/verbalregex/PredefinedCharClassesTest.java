@@ -85,4 +85,15 @@ public class PredefinedCharClassesTest {
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), not(DIGITS));
 
     }
+
+    @Test
+    public void testWord() throws Exception {
+        VerbalExpression regex = regex().word().build();
+
+        assertThat("not matches on word", regex.test(LETTERS_NO_DIGITS + DIGITS), is(true));
+        assertThat("matches on space and non letters", regex.test(SPACE + NON_LETTERS), is(false));
+        assertThat("extracts wrong chars",
+                regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), is(LETTERS_NO_DIGITS + DIGITS));
+
+    }
 }

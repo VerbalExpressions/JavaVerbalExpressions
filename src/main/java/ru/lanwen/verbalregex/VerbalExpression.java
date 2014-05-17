@@ -28,49 +28,136 @@ public class VerbalExpression {
             return new VerbalExpression(pattern);
         }
 
+        /**
+         * Append literal expression
+         * Everything added to the expression should go trough this method
+         * (keep in mind when creating your own methods).
+         * All existing methods already use this, so for basic usage, you can just ignore this method.
+         * <p/>
+         * Example:
+         * regex().add("\n.*").build() // produce exact "\n.*" regexp
+         *
+         * @param pValue - literal expression, not sanitized
+         * @return this builder
+         */
         public Builder add(String pValue) {
             this.source.append(pValue);
             return this;
         }
 
-        public Builder startOfLine(boolean pEnable) {
+        /**
+         * Enable or disable the expression to start at the beginning of the line
+         *
+         * @param pEnable - enables or disables the line starting
+         * @return this builder
+         */
+        public Builder startOfLine(final boolean pEnable) {
             this.prefixes.append(pEnable ? "^" : "");
+            if (!pEnable) {
+                this.prefixes = new StringBuilder(this.prefixes.toString().replace("^", ""));
+            }
             return this;
         }
 
+        /**
+         * Mark the expression to start at the beginning of the line
+         * Same as {@link #startOfLine(boolean)} with true arg
+         *
+         * @return this builder
+         */
         public Builder startOfLine() {
             return startOfLine(true);
         }
 
+        /**
+         * Enable or disable the expression to end at the last character of the line
+         *
+         * @param pEnable - enables or disables the line ending
+         * @return this builder
+         */
         public Builder endOfLine(final boolean pEnable) {
             this.suffixes.append(pEnable ? "$" : "");
+            if (!pEnable) {
+                this.suffixes = new StringBuilder(this.suffixes.toString().replace("$", ""));
+            }
             return this;
         }
 
+        /**
+         * Mark the expression to end at the last character of the line
+         * Same as {@link #endOfLine(boolean)} with true arg
+         *
+         * @return this builder
+         */
         public Builder endOfLine() {
             return endOfLine(true);
         }
 
-        public Builder then(String pValue) {
+        /**
+         * Add a string to the expression
+         *
+         * @param pValue - the string to be looked for (sanitized)
+         * @return this builder
+         */
+        public Builder then(final String pValue) {
             return this.add("(?:" + sanitize(pValue) + ")");
         }
 
-        public Builder find(String value) {
+        /**
+         * Add a string to the expression
+         * Syntax sugar for {@link #then(String)} - use it in case:
+         * regex().find("string") // when it goes first
+         *
+         * @param value - the string to be looked for (sanitized)
+         * @return this builder
+         */
+        public Builder find(final String value) {
             return this.then(value);
         }
 
+        /**
+         * Add a string to the expression that might appear once (or not)
+         * Example:
+         * The following matches all strings that contain http:// or https://
+         * VerbalExpression regex = regex()
+         * .find("http")
+         * .maybe("s")
+         * .then("://")
+         * .anythingBut(" ").build();
+         * regex.test("http://")    //true
+         * regex.test("https://")   //true
+         *
+         * @param pValue - the string to be looked for
+         * @return this builder
+         */
         public Builder maybe(final String pValue) {
             return this.then(pValue).add("?");
         }
 
+        /**
+         * Add expression that matches anything (includes empty string)
+         *
+         * @return this builder
+         */
         public Builder anything() {
             return this.add("(?:.*)");
         }
 
+        /**
+         * Add expression that matches anything, but not passed argument
+         *
+         * @param pValue - the string not to match
+         * @return
+         */
         public Builder anythingButNot(final String pValue) {
             return this.add("(?:[^" + sanitize(pValue) + "]*)");
         }
 
+        /**
+         * Add expression that matches something that might appear once (or more)
+         *
+         * @return this builder
+         */
         public Builder something() {
             return this.add("(?:.+)");
         }
@@ -79,23 +166,37 @@ public class VerbalExpression {
             return this.add("(?:[^" + sanitize(pValue) + "]+)");
         }
 
+        /**
+         * Add universal line break expression
+         *
+         * @return this builder
+         */
         public Builder lineBreak() {
             return this.add("(?:\\n|(\\r\\n))");
         }
 
+        /**
+         * Shortcut for {@link #lineBreak()}
+         *
+         * @return this builder
+         */
         public Builder br() {
             return this.lineBreak();
         }
 
         /**
-         * @return tab character ('\u0009')
+         * Add expression to match a tab character ('\u0009')
+         *
+         * @return this builder
          */
         public Builder tab() {
             return this.add("(?:\\t)");
         }
 
         /**
-         * @return word, same as [a-zA-Z_0-9]+
+         * Add word, same as [a-zA-Z_0-9]+
+         *
+         * @return this builder
          */
         public Builder word() {
             return this.add("(?:\\w+)");
@@ -107,7 +208,9 @@ public class VerbalExpression {
          */
 
         /**
-         * @return word character, same as [a-zA-Z_0-9]
+         * Add word character, same as [a-zA-Z_0-9]
+         *
+         * @return this builder
          */
         public Builder wordChar() {
             return this.add("(?:\\w)");
@@ -115,35 +218,45 @@ public class VerbalExpression {
 
 
         /**
-         * @return non-word character: [^\w]
+         * Add non-word character: [^\w]
+         *
+         * @return this builder
          */
         public Builder nonWordChar() {
             return this.add("(?:\\W)");
         }
 
         /**
-         * @return non-digit: [^0-9]
+         * Add non-digit: [^0-9]
+         *
+         * @return this builder
          */
         public Builder nonDigit() {
             return this.add("(?:\\D)");
         }
 
         /**
-         * @return same as [0-9]
+         * Add same as [0-9]
+         *
+         * @return this builder
          */
         public Builder digit() {
             return this.add("(?:\\d)");
         }
 
         /**
-         * @return whitespace character, same as [ \t\n\x0B\f\r]
+         * Add whitespace character, same as [ \t\n\x0B\f\r]
+         *
+         * @return this builder
          */
         public Builder space() {
             return this.add("(?:\\s)");
         }
 
         /**
-         * @return non-whitespace character: [^\s]
+         * Add non-whitespace character: [^\s]
+         *
+         * @return this builder
          */
         public Builder nonSpace() {
             return this.add("(?:\\S)");
@@ -164,7 +277,16 @@ public class VerbalExpression {
             return this.anyOf(value);
         }
 
-        public Builder range(String... pArgs) {
+        /**
+         * Add expression to match a range (or multiply ranges)
+         * Usage: .range(from, to [, from, to ... ])
+         * Example: The following matches a hexadecimal number:
+         * regex().range( "0", "9", "a", "f") // produce [0-9a-f]
+         *
+         * @param pArgs - pairs for range
+         * @return this builder
+         */
+        public Builder range(final String... pArgs) {
             StringBuilder value = new StringBuilder("[");
             for (int firstInPairPosition = 1; firstInPairPosition < pArgs.length; firstInPairPosition += 2) {
                 String from = sanitize(pArgs[firstInPairPosition - 1]);
@@ -237,7 +359,7 @@ public class VerbalExpression {
             return this;
         }
 
-        public Builder withAnyCase(boolean pEnable) {
+        public Builder withAnyCase(final boolean pEnable) {
             if (pEnable) {
                 this.addModifier('i');
             } else {
@@ -250,7 +372,7 @@ public class VerbalExpression {
             return withAnyCase(true);
         }
 
-        public Builder searchOneLine(boolean pEnable) {
+        public Builder searchOneLine(final boolean pEnable) {
             if (pEnable) {
                 this.removeModifier('m');
             } else {
@@ -277,7 +399,7 @@ public class VerbalExpression {
          * @param count - number of occurrences of previous group in expression
          * @return this Builder
          */
-        public Builder count(int count) {
+        public Builder count(final int count) {
             this.source.append("{").append(count).append("}");
             return this;
         }
@@ -292,11 +414,17 @@ public class VerbalExpression {
          * @return this Builder
          * @see #count(int)
          */
-        public Builder count(int from, int to) {
+        public Builder count(final int from, final int to) {
             this.source.append("{").append(from).append(",").append(to).append("}");
             return this;
         }
 
+        /**
+         * Add a alternative expression to be matched
+         *
+         * @param pValue - the string to be looked for
+         * @return this builder
+         */
         public Builder or(final String pValue) {
             this.prefixes.append("(");
 
@@ -316,6 +444,7 @@ public class VerbalExpression {
 
         /**
          * Adds capture - open brace to current position and closed to suffixes
+         *
          * @return this builder
          */
         public Builder capture() {
@@ -326,10 +455,11 @@ public class VerbalExpression {
         /**
          * Close brace for previous capture and remove last closed brace from suffixes
          * Can be used to continue build regex after capture or to add multiply captures
+         *
          * @return this builder
          */
         public Builder endCapture() {
-            if(this.suffixes.indexOf(")") != -1) {
+            if (this.suffixes.indexOf(")") != -1) {
                 this.suffixes.setLength(suffixes.length() - 1);
                 return this.add(")");
             } else {
@@ -338,6 +468,17 @@ public class VerbalExpression {
         }
     }
 
+
+    private VerbalExpression(final Pattern pattern) {
+        this.pattern = pattern;
+    }
+
+    /**
+     * Test that full string matches regular expression
+     *
+     * @param pToTest - string to check match
+     * @return true if matches exact string, false otherwise
+     */
     public boolean testExact(final String pToTest) {
         boolean ret = false;
         if (pToTest != null) {
@@ -346,6 +487,12 @@ public class VerbalExpression {
         return ret;
     }
 
+    /**
+     * Test that full string contains regex
+     *
+     * @param pToTest - string to check match
+     * @return true if string contains regex, false otherwise
+     */
     public boolean test(final String pToTest) {
         boolean ret = false;
         if (pToTest != null) {
@@ -354,15 +501,25 @@ public class VerbalExpression {
         return ret;
     }
 
-    private VerbalExpression(final Pattern pattern) {
-        this.pattern = pattern;
-    }
-
-    public String getText(String toTest) {
+    /**
+     * Extract full string that matches regex
+     * Same as {@link #getText(String, int)} for 0 group
+     *
+     * @param toTest - string to extract from
+     * @return group 0, extracted from text
+     */
+    public String getText(final String toTest) {
         return getText(toTest, 0);
     }
 
-    public String getText(String toTest, int group) {
+    /**
+     * Extract exact group from string
+     *
+     * @param toTest - string to extract from
+     * @param group  - group to extract
+     * @return extracted group
+     */
+    public String getText(final String toTest, final int group) {
         Matcher m = pattern.matcher(toTest);
         StringBuilder result = new StringBuilder();
         while (m.find()) {
@@ -371,6 +528,18 @@ public class VerbalExpression {
         return result.toString();
     }
 
+
+    @Override
+    public String toString() {
+        return pattern.pattern();
+    }
+
+    /**
+     * Creates new instance of VerbalExpression builder from cloned builder
+     *
+     * @param pBuilder - instance to clone
+     * @return new VerbalExpression.Builder copied from passed
+     */
     public static Builder regex(final Builder pBuilder) {
         Builder builder = new Builder();
 
@@ -382,12 +551,12 @@ public class VerbalExpression {
         return builder;
     }
 
+    /**
+     * Creates new instance of VerbalExpression builder
+     *
+     * @return new VerbalExpression.Builder
+     */
     public static Builder regex() {
         return new Builder();
-    }
-
-    @Override
-    public String toString() {
-        return pattern.pattern();
     }
 }
