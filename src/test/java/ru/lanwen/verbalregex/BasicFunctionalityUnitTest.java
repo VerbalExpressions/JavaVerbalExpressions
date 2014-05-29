@@ -2,9 +2,10 @@ package ru.lanwen.verbalregex;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static ru.lanwen.verbalregex.VerbalExpression.regex;
+import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
 
 public class BasicFunctionalityUnitTest {
     @Test
@@ -69,7 +70,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testStartOfLineFalse() {
-        VerbalExpression testRegex = VerbalExpression.regex()
+        VerbalExpression testRegex = regex()
                 .startOfLine(false)
                 .then("a")
                 .build();
@@ -79,7 +80,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testRangeWithMultiplyRanges() throws Exception {
-        VerbalExpression regex = VerbalExpression.regex().range("a", "z", "A", "Z").build();
+        VerbalExpression regex = regex().range("a", "z", "A", "Z").build();
 
         assertThat("Regex with multi-range differs from expected", regex.toString(), equalTo("[a-zA-Z]"));
         assertThat("Regex don't matches letter", regex.test("b"), is(true));
@@ -102,7 +103,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testEndOfLineIsFalse() {
-        VerbalExpression testRegex = VerbalExpression.regex()
+        VerbalExpression testRegex = regex()
                 .find("a")
                 .endOfLine(false)
                 .build();
@@ -141,8 +142,8 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testAnySameAsAnyOf() {
-        VerbalExpression any = VerbalExpression.regex().any("abc").build();
-        VerbalExpression anyOf = VerbalExpression.regex().anyOf("abc").build();
+        VerbalExpression any = regex().any("abc").build();
+        VerbalExpression anyOf = regex().anyOf("abc").build();
 
         assertThat("any differs from anyOf", any.toString(), equalTo(anyOf.toString()));
     }
@@ -189,7 +190,7 @@ public class BasicFunctionalityUnitTest {
                 .then("def")
                 .build();
 
-       assertThat(".br() differs from .lineBreak()", testRegexBr.toString(), equalTo(testRegexLineBr.toString()));
+        assertThat(".br() differs from .lineBreak()", testRegexBr.toString(), equalTo(testRegexLineBr.toString()));
     }
 
     @Test
@@ -224,7 +225,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testWithAnyCaseIsFalse() {
-        VerbalExpression testRegex = VerbalExpression.regex()
+        VerbalExpression testRegex = regex()
                 .withAnyCase()
                 .startOfLine()
                 .then("a")
@@ -236,7 +237,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void testSearchOneLine() {
-        VerbalExpression testRegex = VerbalExpression.regex()
+        VerbalExpression testRegex = regex()
                 .startOfLine()
                 .then("a")
                 .br()
@@ -274,7 +275,7 @@ public class BasicFunctionalityUnitTest {
     @Test
     public void testStartCapture() {
         String text = "aaabcd";
-        VerbalExpression regex = VerbalExpression.regex()
+        VerbalExpression regex = regex()
                 .find("a").count(3)
                 .capture().find("b").anything().build();
 
@@ -283,9 +284,15 @@ public class BasicFunctionalityUnitTest {
     }
 
     @Test
+    public void captIsSameAsCapture() {
+        assertThat("Capt produce defferent than capture regex", regex().capt().build().toString(),
+                equalTo(regex().capture().build().toString()));
+    }
+
+    @Test
     public void shouldReturnEmptyStringWhenNoGroupFound() {
         String text = "abc";
-        VerbalExpression regex = VerbalExpression.regex().find("d").capture().find("e").build();
+        VerbalExpression regex = regex().find("d").capture().find("e").build();
 
         assertThat("regex don't match string", regex.getText(text), equalTo(""));
         assertThat("first captured group not empty string", regex.getText(text, 1), equalTo(""));
@@ -298,17 +305,17 @@ public class BasicFunctionalityUnitTest {
         String text2c = "abcce";
         String text1c = "abce";
 
-        VerbalExpression regex = VerbalExpression.regex().find("c").count(2, 3).build();
+        VerbalExpression regex = regex().find("c").count(2, 3).build();
 
         assertThat("regex don't match string", regex.getText(text4c), equalTo("ccc"));
         assertThat("regex don't match string", regex.getText(text2c), equalTo("cc"));
         assertThat("regex don't match string", regex.test(text1c), is(false));
     }
 
-   @Test
+    @Test
     public void testEndCapture() {
         String text = "aaabcd";
-        VerbalExpression regex = VerbalExpression.regex()
+        VerbalExpression regex = regex()
                 .find("a")
                 .capture().find("b").anything().endCapture().then("cd").build();
 
@@ -320,16 +327,17 @@ public class BasicFunctionalityUnitTest {
     @Test
     public void testMultiplyCapture() {
         String text = "aaabcd";
-        VerbalExpression regex = VerbalExpression.regex()
+        VerbalExpression regex = regex()
                 .find("a").count(1)
                 .capture().find("b").endCapture().anything().capture().find("d").build();
 
         assertThat("can't get first captured group", regex.getText(text, 1), equalTo("b"));
         assertThat("can't get second captured group", regex.getText(text, 2), equalTo("d"));
     }
+
     @Test
     public void testOrWithCapture() {
-        VerbalExpression testRegex = VerbalExpression.regex()
+        VerbalExpression testRegex = regex()
                 .capture()
                 .find("abc")
                 .or("def")
@@ -343,4 +351,18 @@ public class BasicFunctionalityUnitTest {
         assertThat(testRegex.getText("xxxabcdefzzz", 2), equalTo("abcnull"));
     }
 
+    @Test
+    public void addRegexBuilderWrapsItWithUnsavedGroup() throws Exception {
+        VerbalExpression regex = regex()
+                .add(regex().capt().find("string").count(2).endCapt().count(1).digit()).count(2).build();
+
+        assertThat("Added regex builder don't wrapped with unsaved group",
+                regex.toString(), startsWith("(?:((?:string"));
+
+        String example = "stringstring1";
+        String example2digit = "stringstring11";
+
+        assertThat(regex, matchesExactly(example + example));
+        assertThat(regex, not(matchesExactly(example2digit)));
+    }
 }
