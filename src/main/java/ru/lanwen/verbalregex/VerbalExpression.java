@@ -3,6 +3,8 @@ package ru.lanwen.verbalregex;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.String.valueOf;
+
 public class VerbalExpression {
 
     private final Pattern pattern;
@@ -14,10 +16,34 @@ public class VerbalExpression {
         private StringBuilder suffixes = new StringBuilder();
         private int modifiers = Pattern.MULTILINE;
 
+        /**
+         * Package private. Use {@link #regex()} to build a new one
+         *
+         * @since 1.2
+         */
+        Builder() {
+        }
+
+        /**
+         * Escapes any non-word char with two backslashes
+         * used by any method, except {@link #add(String)}
+         *
+         * @param pValue - the string for char escaping
+         * @return sanitized string value
+         */
         private String sanitize(final String pValue) {
             return pValue.replaceAll("[\\W]", "\\\\$0");
         }
 
+        /**
+         * Counts occurrences of some substring in whole string
+         * Same as org.apache.commons.lang3.StringUtils#countMatches(String, java.lang.String)
+         * by effect. Used to count braces for {@link #or(String)} method
+         *
+         * @param where - where to find
+         * @param what  - what needs to count matches
+         * @return 0 if nothing found, count of occurrences instead
+         */
         private int countOccurrencesOf(String where, String what) {
             return (where.length() - where.replace(what, "").length()) / what.length();
         }
@@ -40,9 +66,20 @@ public class VerbalExpression {
          * @param pValue - literal expression, not sanitized
          * @return this builder
          */
-        public Builder add(String pValue) {
+        public Builder add(final String pValue) {
             this.source.append(pValue);
             return this;
+        }
+
+        /**
+         * Append a regex from builder and wrap it with unnamed group (?: ... )
+         *
+         * @param regex - VerbalExpression.Builder, that not changed
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder add(final Builder regex) {
+            return this.group().add(regex.build().toString()).endGr();
         }
 
         /**
@@ -147,7 +184,7 @@ public class VerbalExpression {
          * Add expression that matches anything, but not passed argument
          *
          * @param pValue - the string not to match
-         * @return
+         * @return this builder
          */
         public Builder anythingButNot(final String pValue) {
             return this.add("(?:[^" + sanitize(pValue) + "]*)");
@@ -273,6 +310,12 @@ public class VerbalExpression {
             return this;
         }
 
+        /**
+         * Shortcut to {@link #anyOf(String)}
+         *
+         * @param value - CharSequence every char from can be matched
+         * @return this builder
+         */
         public Builder any(final String value) {
             return this.anyOf(value);
         }
@@ -368,6 +411,15 @@ public class VerbalExpression {
             return this;
         }
 
+        /**
+         * Turn ON matching with ignoring case
+         * Example:
+         * // matches "a"
+         * // matches "A"
+         * regex().find("a").withAnyCase()
+         *
+         * @return this builder
+         */
         public Builder withAnyCase() {
             return withAnyCase(true);
         }
@@ -381,14 +433,57 @@ public class VerbalExpression {
             return this;
         }
 
-        public Builder multiple(final String pValue) {
-            switch (pValue.charAt(0)) {
-                case '*':
-                case '+':
-                    return this.add(pValue);
-                default:
-                    return this.add(this.sanitize(pValue) + '+');
+        /**
+         * Convenient method to show that string usage count is exact count, range count or simply one or more
+         * Usage:
+         * regex().multiply("abc")                                  // Produce (?:abc)+
+         * regex().multiply("abc", null)                            // Produce (?:abc)+
+         * regex().multiply("abc", (int)from)                       // Produce (?:abc){from}
+         * regex().multiply("abc", (int)from, (int)to)              // Produce (?:abc){from, to}
+         * regex().multiply("abc", (int)from, (int)to, (int)...)    // Produce (?:abc)+
+         *
+         * @param pValue - the string to be looked for
+         * @param count  - (optional) if passed one or two numbers, it used to show count or range count
+         * @return this builder
+         * @see #oneOrMore()
+         * @see #then(String)
+         * @see #zeroOrMore()
+         */
+        public Builder multiple(final String pValue, final int... count) {
+            if (count == null) {
+                return this.then(pValue).oneOrMore();
             }
+            switch (count.length) {
+                case 1:
+                    return this.then(pValue).count(count[0]);
+                case 2:
+                    return this.then(pValue).count(count[0], count[1]);
+                default:
+                    return this.then(pValue).oneOrMore();
+            }
+        }
+
+        /**
+         * Adds "+" char to regexp
+         * Same effect as {@link #atLeast(int)} with "1" argument
+         * Also, used by {@link #multiple(String, int...)} when second argument is null, or have length more than 2
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder oneOrMore() {
+            return this.add("+");
+        }
+
+        /**
+         * Adds "*" char to regexp, means zero or more times repeated
+         * Same effect as {@link #atLeast(int)} with "0" argument
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder zeroOrMore() {
+            return this.add("*");
         }
 
         /**
@@ -417,6 +512,22 @@ public class VerbalExpression {
         public Builder count(final int from, final int to) {
             this.source.append("{").append(from).append(",").append(to).append("}");
             return this;
+        }
+
+        /**
+         * Produce range count with only minimal number of occurrences
+         * for example:
+         * .find("w").atLeast(1) // produce (?:w){1,}
+         *
+         * @param from - minimal number of occurrences
+         * @return this Builder
+         * @see #count(int)
+         * @see #oneOrMore()
+         * @see #zeroOrMore()
+         * @since 1.2
+         */
+        public Builder atLeast(final int from) {
+            return this.add("{").add(valueOf(from)).add(",}");
         }
 
         /**
@@ -453,6 +564,34 @@ public class VerbalExpression {
         }
 
         /**
+         * Shortcut for {@link #capture()}
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder capt() {
+            return this.capture();
+        }
+
+        /**
+         * Same as {@link #capture()}, but don't save result
+         * May be used to set count of duplicated captures, without creating a new saved capture
+         * Example:
+         * // Without group() - count(2) applies only to second capture
+         * regex().group()
+         * .capt().range("0", "1").endCapt().tab()
+         * .capt().digit().count(5).endCapt()
+         * .endGr().count(2);
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder group() {
+            this.suffixes.append(")");
+            return this.add("(?:");
+        }
+
+        /**
          * Close brace for previous capture and remove last closed brace from suffixes
          * Can be used to continue build regex after capture or to add multiply captures
          *
@@ -463,12 +602,41 @@ public class VerbalExpression {
                 this.suffixes.setLength(suffixes.length() - 1);
                 return this.add(")");
             } else {
-                throw new IllegalStateException("Can't end capture when it not started");
+                throw new IllegalStateException("Can't end capture (group) when it not started");
             }
+        }
+
+        /**
+         * Shortcut for {@link #endCapture()}
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder endCapt() {
+            return this.endCapture();
+        }
+
+        /**
+         * Closes current unnamed and unmatching group
+         * Shortcut for {@link #endCapture()}
+         * Use it with {@link #group()} for prettify code
+         * Example:
+         * regex().group().maybe("word").count(2).endGr()
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder endGr() {
+            return this.endCapture();
         }
     }
 
-
+    /**
+     * Use builder {@link #regex()} (or {@link #regex(ru.lanwen.verbalregex.VerbalExpression.Builder)})
+     * to create new instance of VerbalExpression
+     *
+     * @param pattern - {@link java.util.regex.Pattern} that constructed by builder
+     */
     private VerbalExpression(final Pattern pattern) {
         this.pattern = pattern;
     }
@@ -518,6 +686,7 @@ public class VerbalExpression {
      * @param toTest - string to extract from
      * @param group  - group to extract
      * @return extracted group
+     * @since 1.1
      */
     public String getText(final String toTest, final int group) {
         Matcher m = pattern.matcher(toTest);
@@ -539,6 +708,7 @@ public class VerbalExpression {
      *
      * @param pBuilder - instance to clone
      * @return new VerbalExpression.Builder copied from passed
+     * @since 1.1
      */
     public static Builder regex(final Builder pBuilder) {
         Builder builder = new Builder();
@@ -555,6 +725,7 @@ public class VerbalExpression {
      * Creates new instance of VerbalExpression builder
      *
      * @return new VerbalExpression.Builder
+     * @since 1.1
      */
     public static Builder regex() {
         return new Builder();

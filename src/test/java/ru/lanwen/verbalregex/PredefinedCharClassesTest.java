@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
+import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
 
 /**
  * User: lanwen
@@ -24,8 +25,8 @@ public class PredefinedCharClassesTest {
     public void testWordChar() throws Exception {
         VerbalExpression regex = regex().wordChar().build();
 
-        assertThat("Not matches on letters", regex.test(LETTERS_NO_DIGITS + DIGITS), is(true));
-        assertThat("matches on non letters", regex.test(NON_LETTERS + SPACE), is(false));
+        assertThat("Not matches on letters", regex, matchesTo(LETTERS_NO_DIGITS + DIGITS));
+        assertThat("matches on non letters", regex, not(matchesTo((NON_LETTERS + SPACE))));
         assertThat("Extracts wrong word chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), equalTo(LETTERS_NO_DIGITS + DIGITS));
 
@@ -35,8 +36,8 @@ public class PredefinedCharClassesTest {
     public void testNonWordChar() throws Exception {
         VerbalExpression regex = regex().nonWordChar().build();
 
-        assertThat("matches on letters", regex.test(LETTERS_NO_DIGITS + DIGITS), is(false));
-        assertThat("Not matches on non letters", regex.test(NON_LETTERS + SPACE), is(true));
+        assertThat("matches on letters", regex, not(matchesTo((LETTERS_NO_DIGITS + DIGITS))));
+        assertThat("Not matches on non letters", regex, matchesTo(NON_LETTERS + SPACE));
         assertThat("Extracts wrong chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), equalTo(NON_LETTERS + SPACE));
 
@@ -46,8 +47,8 @@ public class PredefinedCharClassesTest {
     public void testSpace() throws Exception {
         VerbalExpression regex = regex().space().build();
 
-        assertThat("matches on letters", regex.test(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS), is(false));
-        assertThat("Not matches on space", regex.test(SPACE), is(true));
+        assertThat("matches on letters", regex, not(matchesTo((LETTERS_NO_DIGITS + DIGITS + NON_LETTERS))));
+        assertThat("Not matches on space", regex, matchesTo(SPACE));
         assertThat("Extracts wrong chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), equalTo(SPACE));
 
@@ -57,8 +58,8 @@ public class PredefinedCharClassesTest {
     public void testNonSpace() throws Exception {
         VerbalExpression regex = regex().nonSpace().build();
 
-        assertThat("Not matches on non space", regex.test(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS), is(true));
-        assertThat("matches on space", regex.test(SPACE), is(false));
+        assertThat("Not matches on non space", regex, matchesTo(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS));
+        assertThat("matches on space", regex, not(matchesTo((SPACE))));
         assertThat("Extracts wrong chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), not(SPACE));
 
@@ -68,8 +69,8 @@ public class PredefinedCharClassesTest {
     public void testDigit() throws Exception {
         VerbalExpression regex = regex().digit().build();
 
-        assertThat("matches on letters", regex.test(LETTERS_NO_DIGITS + SPACE + NON_LETTERS), is(false));
-        assertThat("Not matches on digits", regex.test(DIGITS), is(true));
+        assertThat("matches on letters", regex, not(matchesTo((LETTERS_NO_DIGITS + SPACE + NON_LETTERS))));
+        assertThat("Not matches on digits", regex, matchesTo(DIGITS));
         assertThat("Extracts wrong chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), is(DIGITS));
 
@@ -79,8 +80,8 @@ public class PredefinedCharClassesTest {
     public void testNonDigit() throws Exception {
         VerbalExpression regex = regex().nonDigit().build();
 
-        assertThat("Not matches on letters", regex.test(LETTERS_NO_DIGITS + SPACE + NON_LETTERS), is(true));
-        assertThat("matches on digits", regex.test(DIGITS), is(false));
+        assertThat("Not matches on letters", regex, matchesTo(LETTERS_NO_DIGITS + SPACE + NON_LETTERS));
+        assertThat("matches on digits", regex, not(matchesTo((DIGITS))));
         assertThat("Extracts wrong chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), not(DIGITS));
 
@@ -90,8 +91,8 @@ public class PredefinedCharClassesTest {
     public void testWord() throws Exception {
         VerbalExpression regex = regex().word().build();
 
-        assertThat("not matches on word", regex.test(LETTERS_NO_DIGITS + DIGITS), is(true));
-        assertThat("matches on space and non letters", regex.test(SPACE + NON_LETTERS), is(false));
+        assertThat("not matches on word", regex, matchesTo(LETTERS_NO_DIGITS + DIGITS));
+        assertThat("matches on space and non letters", regex, not(matchesTo(SPACE + NON_LETTERS)));
         assertThat("extracts wrong chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), is(LETTERS_NO_DIGITS + DIGITS));
 
