@@ -6,8 +6,8 @@ import java.util.regex.PatternSyntaxException;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
 
 /**
  * User: lanwen
@@ -49,8 +49,8 @@ public class NegativeCasesTest {
     @Test
     public void orWithNullMatchesAny() throws Exception {
         VerbalExpression regex = VerbalExpression.regex().startOfLine().then("a").or(null).build();
-        assertThat("regex don't matches writed letter", regex.test("a"), is(true));
-        assertThat("or(null) should match any", regex.test("bcd"), is(true));
+        assertThat("regex don't matches writed letter", regex, matchesTo("a"));
+        assertThat("or(null) should match any", regex, matchesTo("bcd"));
 
         assertThat("or(null) extract only first", regex.getText("abcd"), equalTo("a"));
     }

@@ -5,6 +5,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
+import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
 import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
 
 public class BasicFunctionalityUnitTest {
@@ -12,9 +13,9 @@ public class BasicFunctionalityUnitTest {
     public void testSomething() {
         VerbalExpression testRegex = new VerbalExpression.Builder().something().build();
 
-        assertFalse("Null object doesn't have something", testRegex.test(null));
-        assertFalse("empty string doesn't have something", testRegex.test(""));
-        assertTrue("a", testRegex.test("a"));
+        assertThat("Null object doesn't have something", testRegex, not(matchesTo(null)));
+        assertThat("empty string doesn't have something", testRegex, not(matchesTo("")));
+        assertThat("a", testRegex, matchesTo("a"));
     }
 
     @Test
@@ -24,9 +25,9 @@ public class BasicFunctionalityUnitTest {
                 .anything()
                 .build();
 
-        assertTrue(testRegex.test("what"));
-        assertFalse(testRegex.test(""));
-        assertTrue(testRegex.test(" "));
+        assertThat(testRegex, matchesTo("what"));
+        assertThat(testRegex, not(matchesTo("")));
+        assertThat(testRegex, matchesTo(" "));
     }
 
     @Test
@@ -63,9 +64,9 @@ public class BasicFunctionalityUnitTest {
 
         assertFalse("Null string", testRegex.testExact(null));
         assertFalse("empty string doesn't have something", testRegex.testExact(""));
-        assertTrue("Starts with a", testRegex.test("a"));
-        assertTrue("Starts with a", testRegex.test("ab"));
-        assertFalse("Doesn't start with a", testRegex.test("ba"));
+        assertThat("Starts with a", testRegex, matchesTo("a"));
+        assertThat("Starts with a", testRegex, matchesTo("ab"));
+        assertThat("Doesn't start with a", testRegex, not(matchesTo("ba")));
     }
 
     @Test
@@ -74,8 +75,8 @@ public class BasicFunctionalityUnitTest {
                 .startOfLine(false)
                 .then("a")
                 .build();
-        assertThat(testRegex.test("ba"), is(true));
-        assertThat(testRegex.test("ab"), is(true));
+        assertThat(testRegex, matchesTo("ba"));
+        assertThat(testRegex, matchesTo("ab"));
     }
 
     @Test
@@ -83,8 +84,8 @@ public class BasicFunctionalityUnitTest {
         VerbalExpression regex = regex().range("a", "z", "A", "Z").build();
 
         assertThat("Regex with multi-range differs from expected", regex.toString(), equalTo("[a-zA-Z]"));
-        assertThat("Regex don't matches letter", regex.test("b"), is(true));
-        assertThat("Regex matches digit, but should match only letter", regex.test("1"), is(false));
+        assertThat("Regex don't matches letter", regex, matchesTo("b"));
+        assertThat("Regex matches digit, but should match only letter", regex, not(matchesTo("1")));
     }
 
     @Test
@@ -94,10 +95,10 @@ public class BasicFunctionalityUnitTest {
                 .endOfLine()
                 .build();
 
-        assertTrue("Ends with a", testRegex.test("bba"));
-        assertTrue("Ends with a", testRegex.test("a"));
-        assertFalse("Ends with a", testRegex.test(null));
-        assertFalse("Doesn't end with a", testRegex.test("ab"));
+        assertThat("Ends with a", testRegex, matchesTo("bba"));
+        assertThat("Ends with a", testRegex, matchesTo("a"));
+        assertThat("Ends with a", testRegex, not(matchesTo(null)));
+        assertThat("Doesn't end with a", testRegex, not(matchesTo("ab")));
     }
 
 
@@ -107,8 +108,8 @@ public class BasicFunctionalityUnitTest {
                 .find("a")
                 .endOfLine(false)
                 .build();
-        assertThat(testRegex.test("ba"), is(true));
-        assertThat(testRegex.test("ab"), is(true));
+        assertThat(testRegex, matchesTo("ba"));
+        assertThat(testRegex, matchesTo("ab"));
     }
 
 
@@ -122,9 +123,9 @@ public class BasicFunctionalityUnitTest {
 
         assertThat("Regex isn't correct", testRegex.toString(), equalTo("^(?:a)(?:b)?"));
 
-        assertTrue("Maybe has a 'b' after an 'a'", testRegex.test("acb"));
-        assertTrue("Maybe has a 'b' after an 'a'", testRegex.test("abc"));
-        assertFalse("Maybe has a 'b' after an 'a'", testRegex.test("cab"));
+        assertThat("Maybe has a 'b' after an 'a'", testRegex, matchesTo("acb"));
+        assertThat("Maybe has a 'b' after an 'a'", testRegex, matchesTo("abc"));
+        assertThat("Maybe has a 'b' after an 'a'", testRegex, not(matchesTo("cab")));
     }
 
     @Test
@@ -135,8 +136,8 @@ public class BasicFunctionalityUnitTest {
                 .anyOf("xyz")
                 .build();
 
-        assertTrue("Has an x, y, or z after a", testRegex.test("ay"));
-        assertFalse("Doesn't have an x, y, or z after a", testRegex.test("abc"));
+        assertThat("Has an x, y, or z after a", testRegex, matchesTo("ay"));
+        assertThat("Doesn't have an x, y, or z after a", testRegex, not(matchesTo("abc")));
     }
 
 
@@ -156,8 +157,8 @@ public class BasicFunctionalityUnitTest {
                 .or("def")
                 .build();
 
-        assertTrue("Starts with abc or def", testRegex.test("defzzz"));
-        assertFalse("Doesn't start with abc or def", testRegex.test("xyzabc"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Doesn't start with abc or def", testRegex, not(matchesTo("xyzabc")));
     }
 
     @Test
@@ -169,9 +170,9 @@ public class BasicFunctionalityUnitTest {
                 .then("def")
                 .build();
 
-        assertTrue("abc then line break then def", testRegex.test("abc\r\ndef"));
-        assertTrue("abc then line break then def", testRegex.test("abc\ndef"));
-        assertFalse("abc then line break then space then def", testRegex.test("abc\r\n def"));
+        assertThat("abc then line break then def", testRegex, matchesTo("abc\r\ndef"));
+        assertThat("abc then line break then def", testRegex, matchesTo("abc\ndef"));
+        assertThat("abc then line break then space then def", testRegex, not(matchesTo("abc\r\n def")));
     }
 
     @Test
@@ -201,8 +202,8 @@ public class BasicFunctionalityUnitTest {
                 .then("abc")
                 .build();
 
-        assertTrue("tab then abc", testRegex.test("\tabc"));
-        assertFalse("no tab then abc", testRegex.test("abc"));
+        assertThat("tab then abc", testRegex, matchesTo("\tabc"));
+        assertThat("no tab then abc", testRegex, not(matchesTo("abc")));
     }
 
     @Test
@@ -212,15 +213,15 @@ public class BasicFunctionalityUnitTest {
                 .then("a")
                 .build();
 
-        assertFalse("not case insensitive", testRegex.test("A"));
+        assertThat("not case insensitive", testRegex, not(matchesTo("A")));
         testRegex = new VerbalExpression.Builder()
                 .startOfLine()
                 .then("a")
                 .withAnyCase()
                 .build();
 
-        assertTrue("case insensitive", testRegex.test("A"));
-        assertTrue("case insensitive", testRegex.test("a"));
+        assertThat("case insensitive", testRegex, matchesTo("A"));
+        assertThat("case insensitive", testRegex, matchesTo("a"));
     }
 
     @Test
@@ -232,7 +233,7 @@ public class BasicFunctionalityUnitTest {
                 .withAnyCase(false)
                 .build();
 
-        assertThat(testRegex.test("A"), is(false));
+        assertThat(testRegex, not(matchesTo("A")));
     }
 
     @Test
@@ -245,7 +246,7 @@ public class BasicFunctionalityUnitTest {
                 .endOfLine()
                 .build();
 
-        assertTrue("b is on the second line", testRegex.test("a\nb"));
+        assertThat("b is on the second line", testRegex, matchesTo("a\nb"));
 
         testRegex = new VerbalExpression.Builder()
                 .startOfLine()
@@ -256,7 +257,7 @@ public class BasicFunctionalityUnitTest {
                 .searchOneLine(true)
                 .build();
 
-        assertTrue("b is on the second line but we are only searching the first", testRegex.test("a\nb"));
+        assertThat("b is on the second line but we are only searching the first", testRegex, matchesTo("a\nb"));
     }
 
     @Test
@@ -309,7 +310,7 @@ public class BasicFunctionalityUnitTest {
 
         assertThat("regex don't match string", regex.getText(text4c), equalTo("ccc"));
         assertThat("regex don't match string", regex.getText(text2c), equalTo("cc"));
-        assertThat("regex don't match string", regex.test(text1c), is(false));
+        assertThat("regex don't match string", regex, not(matchesTo(text1c)));
     }
 
     @Test
@@ -342,9 +343,9 @@ public class BasicFunctionalityUnitTest {
                 .find("abc")
                 .or("def")
                 .build();
-        assertTrue("Starts with abc or def", testRegex.test("defzzz"));
-        assertTrue("Starts with abc or def", testRegex.test("abczzz"));
-        assertFalse("Doesn't start with abc or def", testRegex.testExact("xyzabcefg"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
 
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
         assertThat(testRegex.getText("xxxdefzzz", 2), equalTo("null"));
