@@ -5,6 +5,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
+import static ru.lanwen.verbalregex.matchers.EqualToRegexMatcher.equalToRegex;
 import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
 import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
 
@@ -352,6 +353,24 @@ public class BasicFunctionalityUnitTest {
         assertThat(testRegex.getText("xxxabcdefzzz", 2), equalTo("abcnull"));
     }
 
+
+    @Test
+    public void testOrWithClosedCapture() {
+        VerbalExpression testRegex = regex()
+                .capture()
+                .find("abc")
+                .endCapt()
+                .or("def")
+                .build();
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxdefzzz", 2), equalTo("null"));
+        assertThat(testRegex.getText("xxxabcdefzzz", 2), equalTo("abcnull"));
+    }
+
     @Test
     public void addRegexBuilderWrapsItWithUnsavedGroup() throws Exception {
         VerbalExpression regex = regex()
@@ -365,5 +384,84 @@ public class BasicFunctionalityUnitTest {
 
         assertThat(regex, matchesExactly(example + example));
         assertThat(regex, not(matchesExactly(example2digit)));
+    }
+
+    @Test
+    public void multiplyWith1NumProduceSameAsCountResult() throws Exception {
+        VerbalExpression regex = regex().multiple("a", 1).build();
+
+        assertThat(regex, equalToRegex(regex().find("a").count(1)));
+    }
+
+    @Test
+    public void multiplyWith2NumProduceSameAsCountRangeResult() throws Exception {
+        VerbalExpression regex = regex().multiple("a", 1, 2).build();
+
+        assertThat(regex, equalToRegex(regex().find("a").count(1, 2)));
+    }
+
+    @Test
+    public void atLeast1HaveSameEffectAsOneOrMore() throws Exception {
+        VerbalExpression regex = regex().find("a").atLeast(1).build();
+
+        String matched = "aaaaaa";
+        String oneMatchedExactly = "a";
+        String oneMatched = "ab";
+        String empty = "";
+
+        assertThat(regex, matchesExactly(matched));
+        assertThat(regex, matchesExactly(oneMatchedExactly));
+        assertThat(regex, not(matchesExactly(oneMatched)));
+        assertThat(regex, matchesTo(oneMatched));
+        assertThat(regex, not(matchesTo(empty)));
+    }
+
+    @Test
+    public void oneOreMoreSameAsAtLeast1() throws Exception {
+        VerbalExpression regexWithOneOrMore = regex().find("a").oneOrMore().build();
+
+        String matched = "aaaaaa";
+        String oneMatchedExactly = "a";
+        String oneMatched = "ab";
+        String empty = "";
+
+        assertThat(regexWithOneOrMore, matchesExactly(matched));
+        assertThat(regexWithOneOrMore, matchesExactly(oneMatchedExactly));
+        assertThat(regexWithOneOrMore, not(matchesExactly(oneMatched)));
+        assertThat(regexWithOneOrMore, matchesTo(oneMatched));
+        assertThat(regexWithOneOrMore, not(matchesTo(empty)));
+    }
+
+    @Test
+    public void atLeast0HaveSameEffectAsZeroOrMore() throws Exception {
+        VerbalExpression regex = regex().find("a").atLeast(0).build();
+
+        String matched = "aaaaaa";
+        String oneMatchedExactly = "a";
+        String oneMatched = "ab";
+        String empty = "";
+
+        assertThat(regex, matchesExactly(matched));
+        assertThat(regex, matchesExactly(oneMatchedExactly));
+        assertThat(regex, not(matchesExactly(oneMatched)));
+        assertThat(regex, matchesTo(empty));
+        assertThat(regex, matchesExactly(empty));
+    }
+
+    @Test
+    public void zeroOreMoreSameAsAtLeast0() throws Exception {
+        VerbalExpression regexWithOneOrMore = regex().find("a").zeroOrMore().build();
+
+        String matched = "aaaaaa";
+        String oneMatchedExactly = "a";
+        String oneMatched = "ab";
+        String empty = "";
+
+        assertThat(regexWithOneOrMore, matchesExactly(matched));
+        assertThat(regexWithOneOrMore, matchesExactly(oneMatchedExactly));
+        assertThat(regexWithOneOrMore, not(matchesExactly(oneMatched)));
+        assertThat(regexWithOneOrMore, matchesTo(oneMatched));
+        assertThat(regexWithOneOrMore, matchesTo(empty));
+        assertThat(regexWithOneOrMore, matchesExactly(empty));
     }
 }

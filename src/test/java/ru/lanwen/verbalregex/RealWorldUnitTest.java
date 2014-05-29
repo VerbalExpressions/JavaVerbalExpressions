@@ -1,12 +1,14 @@
 package ru.lanwen.verbalregex;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static ru.lanwen.verbalregex.VerbalExpression.regex;
+import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
+import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
 
 
 public class RealWorldUnitTest {
@@ -25,7 +27,7 @@ public class RealWorldUnitTest {
 
         // Create an example URL
         String testUrl = "https://www.google.com";
-        assertTrue("Matches Google's url", testRegex.test(testUrl)); //True
+        assertThat("Matches Google's url", testRegex, matchesTo(testUrl)); //True
 
         assertThat("Regex doesn't match same regex as in example",
                 testRegex.toString(),
@@ -34,7 +36,7 @@ public class RealWorldUnitTest {
 
     @Test
     public void testTelephoneNumber() {
-        VerbalExpression regex = VerbalExpression.regex()
+        VerbalExpression regex = regex()
                 .startOfLine()
                 .then("+")
                 .capture().range("0", "9").count(3).maybe("-").maybe(" ").endCapture()
@@ -45,9 +47,60 @@ public class RealWorldUnitTest {
         String phoneWithoutSpace = "+097234243";
         String phoneWithDash = "+097-234-243";
 
-        assertThat(regex.testExact(phoneWithSpace), is(true));
-        assertThat(regex.testExact(phoneWithoutSpace), is(true));
-        assertThat(regex.testExact(phoneWithDash), is(true));
+        assertThat(regex, matchesExactly(phoneWithSpace));
+        assertThat(regex, matchesExactly(phoneWithoutSpace));
+        assertThat(regex, matchesExactly(phoneWithDash));
 
+    }
+
+    @Test
+    public void complexPatternWithMultiplyCaptures() throws Exception {
+        String logLine = "3\t4\t1\thttp://localhost:20001\t1\t63528800\t0\t63528800\t1000000000\t0\t63528800\tSTR1";
+
+        VerbalExpression regex = regex()
+                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().range("0", "1").count(1).endCapture().tab()
+                .capt().find("http://localhost:20").digit().count(3).endCapture().tab()
+                .capt().range("0", "1").count(1).endCapture().tab()
+                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().range("0", "1").count(1).endCapture().tab()
+                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().range("0", "1").count(1).endCapture().tab()
+                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().find("STR").range("0", "2").count(1).endCapture().build();
+
+        assertThat(regex, matchesExactly(logLine));
+
+        VerbalExpression.Builder digits = regex().capt().digit().oneOrMore().endCapt().tab();
+        VerbalExpression.Builder range = regex().capt().range("0", "1").count(1).endCapt().tab();
+        VerbalExpression.Builder host = regex().capt().find("http://localhost:20").digit().count(3).endCapt().tab();
+        VerbalExpression.Builder fake = regex().capt().find("STR").range("0", "2").count(1);
+
+        VerbalExpression regex2 = regex()
+                .add(digits).add(digits)
+                .add(range).add(host).add(range).add(digits).add(range)
+                .add(digits).add(digits)
+                .add(range).add(digits).add(fake).build();
+
+        assertThat(regex2, matchesExactly(logLine));
+
+        //(\\d+)\\t(\\d+)\\t([0-1]{1})\\t(http://localhost:20\\d{3})\\t([0-1]{1})
+        // \\t(\\d+)\\t([0-1]{1})\\t(\\d+)\\t(\\d+)\\t([0-1]{1})\\t(\\d+)\\t(FAKE[1-2]{1})
+        /*
+        3    4    1    http://localhost:20001    1    28800    0    528800    1000000000    0    528800    STR1
+        3    5    1    http://localhost:20002    1    28800    0    528800    1000020002    0    528800    STR2
+        4    6    0    http://localhost:20002    1    48800    0    528800    1000000000    0    528800    STR1
+        4    7    0    http://localhost:20003    1    48800    0    528800    1000020003    0    528800    STR2
+        5    8    1    http://localhost:20003    1    68800    0    528800    1000000000    0    528800    STR1
+        5    9    1    http://localhost:20004    1    28800    0    528800    1000020004    0    528800    STR2
+         */
+    }
+
+
+    @Test
+    @Ignore("Planned in 1.3")
+    public void captureWithName() throws Exception {
     }
 }

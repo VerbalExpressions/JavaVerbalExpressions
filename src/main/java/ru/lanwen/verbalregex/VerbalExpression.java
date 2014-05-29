@@ -3,6 +3,8 @@ package ru.lanwen.verbalregex;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.String.valueOf;
+
 public class VerbalExpression {
 
     private final Pattern pattern;
@@ -16,6 +18,7 @@ public class VerbalExpression {
 
         /**
          * Package private. Use {@link #regex()} to build a new one
+         *
          * @since 1.2
          */
         Builder() {
@@ -70,6 +73,7 @@ public class VerbalExpression {
 
         /**
          * Append a regex from builder and wrap it with unnamed group (?: ... )
+         *
          * @param regex - VerbalExpression.Builder, that not changed
          * @return this builder
          * @since 1.2
@@ -407,6 +411,15 @@ public class VerbalExpression {
             return this;
         }
 
+        /**
+         * Turn ON matching with ignoring case
+         * Example:
+         * // matches "a"
+         * // matches "A"
+         * regex().find("a").withAnyCase()
+         *
+         * @return this builder
+         */
         public Builder withAnyCase() {
             return withAnyCase(true);
         }
@@ -420,14 +433,57 @@ public class VerbalExpression {
             return this;
         }
 
-        public Builder multiple(final String pValue) {
-            switch (pValue.charAt(0)) {
-                case '*':
-                case '+':
-                    return this.add(pValue);
-                default:
-                    return this.add(this.sanitize(pValue) + '+');
+        /**
+         * Convenient method to show that string usage count is exact count, range count or simply one or more
+         * Usage:
+         * regex().multiply("abc")                                  // Produce (?:abc)+
+         * regex().multiply("abc", null)                            // Produce (?:abc)+
+         * regex().multiply("abc", (int)from)                       // Produce (?:abc){from}
+         * regex().multiply("abc", (int)from, (int)to)              // Produce (?:abc){from, to}
+         * regex().multiply("abc", (int)from, (int)to, (int)...)    // Produce (?:abc)+
+         *
+         * @param pValue - the string to be looked for
+         * @param count  - (optional) if passed one or two numbers, it used to show count or range count
+         * @return this builder
+         * @see #oneOrMore()
+         * @see #then(String)
+         * @see #zeroOrMore()
+         */
+        public Builder multiple(final String pValue, final int... count) {
+            if (count == null) {
+                return this.then(pValue).oneOrMore();
             }
+            switch (count.length) {
+                case 1:
+                    return this.then(pValue).count(count[0]);
+                case 2:
+                    return this.then(pValue).count(count[0], count[1]);
+                default:
+                    return this.then(pValue).oneOrMore();
+            }
+        }
+
+        /**
+         * Adds "+" char to regexp
+         * Same effect as {@link #atLeast(int)} with "1" argument
+         * Also, used by {@link #multiple(String, int...)} when second argument is null, or have length more than 2
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder oneOrMore() {
+            return this.add("+");
+        }
+
+        /**
+         * Adds "*" char to regexp, means zero or more times repeated
+         * Same effect as {@link #atLeast(int)} with "0" argument
+         *
+         * @return this builder
+         * @since 1.2
+         */
+        public Builder zeroOrMore() {
+            return this.add("*");
         }
 
         /**
@@ -456,6 +512,22 @@ public class VerbalExpression {
         public Builder count(final int from, final int to) {
             this.source.append("{").append(from).append(",").append(to).append("}");
             return this;
+        }
+
+        /**
+         * Produce range count with only minimal number of occurrences
+         * for example:
+         * .find("w").atLeast(1) // produce (?:w){1,}
+         *
+         * @param from - minimal number of occurrences
+         * @return this Builder
+         * @see #count(int)
+         * @see #oneOrMore()
+         * @see #zeroOrMore()
+         * @since 1.2
+         */
+        public Builder atLeast(final int from) {
+            return this.add("{").add(valueOf(from)).add(",}");
         }
 
         /**
@@ -505,12 +577,11 @@ public class VerbalExpression {
          * Same as {@link #capture()}, but don't save result
          * May be used to set count of duplicated captures, without creating a new saved capture
          * Example:
-         *      // Without group() - count(2) applies only to second capture
-         *      regex().group()
-         *          .capt().range("0", "1").endCapt().tab()
-         *          .capt().digit().count(5).endCapt()
-         *          .endGr().count(2);
-         *
+         * // Without group() - count(2) applies only to second capture
+         * regex().group()
+         * .capt().range("0", "1").endCapt().tab()
+         * .capt().digit().count(5).endCapt()
+         * .endGr().count(2);
          *
          * @return this builder
          * @since 1.2
@@ -537,6 +608,7 @@ public class VerbalExpression {
 
         /**
          * Shortcut for {@link #endCapture()}
+         *
          * @return this builder
          * @since 1.2
          */
@@ -545,11 +617,12 @@ public class VerbalExpression {
         }
 
         /**
-         * Closes current unnamed and unsaved group
+         * Closes current unnamed and unmatching group
          * Shortcut for {@link #endCapture()}
          * Use it with {@link #group()} for prettify code
          * Example:
-         *      regex().group().maybe("word").count(2).endGr()
+         * regex().group().maybe("word").count(2).endGr()
+         *
          * @return this builder
          * @since 1.2
          */
