@@ -92,7 +92,7 @@ regex.getText(text, 1)  // returns "b"
 ``` 
 
 ## More complex examples 
-* [Parse long strings example](/VerbalExpressions/JavaVerbalExpressions/wiki/Parse-long-strings-example)
+* [Parse long strings example](https://github.com/VerbalExpressions/JavaVerbalExpressions/wiki/Parse-long-strings-example)
 
 ## Other implementations  
 You can view all implementations on [VerbalExpressions.github.io](http://VerbalExpressions.github.io) 
