@@ -15,7 +15,7 @@ Maven Dependency:
 <dependency>
   <groupId>ru.lanwen.verbalregex</groupId>
   <artifactId>java-verbal-expressions</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 ```
 
@@ -32,14 +32,11 @@ You can use *SNAPSHOT* dependency with adding to `pom.xml`:
 ##Examples
 ```java
 VerbalExpression testRegex = VerbalExpression.regex()
-	           					 .startOfLine()
-	           					 .then("http")
-	           					 .maybe("s")
-	           					 .then("://")
-	           					 .maybe("www.")
-	           					 .anythingButNot(" ")
-	           					 .endOfLine()
-	           					 .build();
+                                                .startOfLine().then("http").maybe("s")
+	           				.then("://")
+	           				.maybe("www.").anythingButNot(" ")
+	           				.endOfLine()
+	           				.build();
 
 // Create an example URL
 String url = "https://www.google.com";
@@ -48,13 +45,14 @@ String url = "https://www.google.com";
 testRegex.testExact(url); //True
 
 testRegex.toString(); // Outputs the regex used:
-					  // ^(?:http)(?:s)?(?:\:\/\/)(?:www\.)?(?:[^\ ]*)$
+                      // ^(?:http)(?:s)?(?:\:\/\/)(?:www\.)?(?:[^\ ]*)$
 
+```
+
+```java
 VerbalExpression testRegex = VerbalExpression.regex()
-                                 .startOfLine()
-                                 .then("abc")
-                                 .or("def")
-                                 .build();
+                                                .startOfLine().then("abc").or("def")
+                                                .build();
 
 String testString = "defzzz";
 
@@ -66,9 +64,35 @@ testRegex.getText(testString);    // returns: def
 
 Builder can be cloned:
 ```java
-// Produce: (.*)$
 VerbalExpression regex = regex(regex().anything().addModifier('i')).endOfLine().build();
+``` 
+
+Or can be used in another regex: 
+```java
+VerbalExpression.Builder digits = regex().capt().digit().oneOrMore().endCapt().tab();
+VerbalExpression regex2 = regex().add(digits).add(digits).build();
+``` 
+
+Feel free to use any predefined char groups: 
+```java
+regex().wordChar().nonWordChar()
+   .space().nonSpace()
+   .digit().nonDigit()
 ```
+
+Define captures:
+```java 
+String text = "aaabcd";
+VerbalExpression regex = regex()
+                .find("a")
+                .capture().find("b").anything().endCapture().then("cd").build();
+
+regex.getText(text)     // returns "abcd"
+regex.getText(text, 1)  // returns "b"
+``` 
+
+## More complex examples 
+* [Parse long strings example](/VerbalExpressions/JavaVerbalExpressions/wiki/Parse-long-strings-example)
 
 ## Other implementations  
 You can view all implementations on [VerbalExpressions.github.io](http://VerbalExpressions.github.io) 
