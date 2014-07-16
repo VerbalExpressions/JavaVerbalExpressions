@@ -537,7 +537,7 @@ public class VerbalExpression {
          * @return this builder
          */
         public Builder or(final String pValue) {
-            this.prefixes.append("(");
+            this.prefixes.append("(?:");
 
             int opened = countOccurrencesOf(this.prefixes.toString(), "(");
             int closed = countOccurrencesOf(this.suffixes.toString(), ")");

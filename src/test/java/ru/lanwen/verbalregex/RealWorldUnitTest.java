@@ -98,6 +98,11 @@ public class RealWorldUnitTest {
          */
     }
 
+    @Test
+    public void unusualRegex() throws Exception {
+        assertThat(regex().add("[A-Z0-1!-|]").build().toString(), equalTo("[A-Z0-1!-|]"));
+
+    }
 
     @Test
     @Ignore("Planned in 1.3")
