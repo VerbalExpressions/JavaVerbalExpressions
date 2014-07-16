@@ -348,9 +348,9 @@ public class BasicFunctionalityUnitTest {
         assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
         assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
 
-        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
-        assertThat(testRegex.getText("xxxdefzzz", 2), equalTo("null"));
-        assertThat(testRegex.getText("xxxabcdefzzz", 2), equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("null"));
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
     }
 
 
@@ -367,8 +367,8 @@ public class BasicFunctionalityUnitTest {
         assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
 
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
-        assertThat(testRegex.getText("xxxdefzzz", 2), equalTo("null"));
-        assertThat(testRegex.getText("xxxabcdefzzz", 2), equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("null"));
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
     }
 
     @Test

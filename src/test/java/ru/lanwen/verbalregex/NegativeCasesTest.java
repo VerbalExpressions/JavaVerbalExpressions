@@ -63,9 +63,7 @@ public class NegativeCasesTest {
         assertThat(regex.toString(), containsString("()|"));
 
         assertThat("regex dont matches string abcd", regex.getText("abcd", 0), equalTo("a"));
-        assertThat("regex dont extract a by first group", regex.getText("abcd", 1), equalTo("a"));
-        assertThat("second group should produce empty string", regex.getText("abcd", 2), equalTo(""));
-
+        assertThat("regex dont extract a by first group", regex.getText("abcd", 1), equalTo(""));
     }
 
     @Test
