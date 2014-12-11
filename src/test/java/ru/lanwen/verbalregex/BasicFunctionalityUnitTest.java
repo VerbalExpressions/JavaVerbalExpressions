@@ -208,6 +208,80 @@ public class BasicFunctionalityUnitTest {
     }
 
     @Test
+    public void testWord() {
+       VerbalExpression testRegex = new VerbalExpression.Builder()
+                    .startOfLine()
+                    .word()
+                    .build();
+       
+       assertThat("word", testRegex, matchesTo("abc123"));
+       assertThat("non-word", testRegex, not(matchesTo("@#")));
+    }
+    
+    @Test
+    public void testMultipleNoRange() {        
+       VerbalExpression testRegexStringOnly = new VerbalExpression.Builder()
+                    .startOfLine()
+                    .multiple("abc")
+                    .build();
+       VerbalExpression testRegexStringAndNull = new VerbalExpression.Builder()
+                           .startOfLine()
+                           .multiple("abc", null)
+                           .build();
+       VerbalExpression testRegexMoreThan2Ints = new VerbalExpression.Builder()
+                           .startOfLine()
+                           .multiple("abc", 2, 4, 8)
+                           .build();
+       VerbalExpression[] testRegexesSameBehavior = {
+                           testRegexStringOnly, 
+                           testRegexStringAndNull,
+                           testRegexMoreThan2Ints
+                    };
+       for (VerbalExpression testRegex : testRegexesSameBehavior) {
+             assertThat("abc once", testRegex, 
+                           matchesTo("abc"));
+             assertThat("abc more than once", testRegex, 
+                           matchesTo("abcabcabc"));
+             assertThat("no abc", testRegex, 
+                           not(matchesTo("xyz")));
+       }
+    }
+    
+    @Test
+    public void testMultipleFrom() { 
+       VerbalExpression testRegexFrom = new VerbalExpression.Builder()
+                           .startOfLine()
+                           .multiple("abc", 2)
+                           .build();
+       assertThat("no abc", testRegexFrom, 
+                    not(matchesTo("xyz")));
+       assertThat("abc less than 2 times", testRegexFrom, 
+                    not(matchesTo("abc")));
+       assertThat("abc exactly 2 times", testRegexFrom, 
+                    matchesTo("abcabc"));
+       assertThat("abc more than 2 times", testRegexFrom, 
+                    matchesTo("abcabcabc"));
+    }
+    
+    @Test
+    public void testMultipleFromTo() { 
+       VerbalExpression testRegexFromTo = new VerbalExpression.Builder()
+                           .startOfLine()
+                           .multiple("abc", 2, 4)
+                           .build();
+       assertThat("no abc", testRegexFromTo, not(matchesTo("xyz")));
+       assertThat("abc less than 2 times", testRegexFromTo, 
+                    not(matchesTo("abc")));
+       assertThat("abc exactly 2 times", testRegexFromTo, matchesTo("abcabc"));
+       assertThat("abc between 2 and 4 times", testRegexFromTo, 
+                    matchesTo("abcabcabc"));
+       assertThat("abc exactly 4 times", testRegexFromTo, 
+                    matchesTo("abcabcabcabc"));
+       assertThat("abc more than 4 times", testRegexFromTo, 
+                    not(matchesExactly("abcabcabcabcabc")));
+    }
+    
+    @Test
     public void testWithAnyCase() {
         VerbalExpression testRegex = new VerbalExpression.Builder()
                 .startOfLine()
