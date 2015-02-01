@@ -35,7 +35,7 @@ public class BasicFunctionalityUnitTest {
     public void testAnythingBut() {
         VerbalExpression testRegex = new VerbalExpression.Builder()
                 .startOfLine()
-                .anythingButNot("w")
+                .anythingBut("w")
                 .build();
 
         assertFalse("starts with w", testRegex.testExact("what"));
@@ -342,7 +342,7 @@ public class BasicFunctionalityUnitTest {
                 .maybe("s")
                 .then("://")
                 .then("www.")
-                .anythingButNot(" ")
+                .anythingBut(" ")
                 .add("com").build();
         assertEquals(testRegex.getText(testString), "https://www.google.com");
 

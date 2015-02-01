@@ -186,7 +186,7 @@ public class VerbalExpression {
          * @param pValue - the string not to match
          * @return this builder
          */
-        public Builder anythingButNot(final String pValue) {
+        public Builder anythingBut(final String pValue) {
             return this.add("(?:[^" + sanitize(pValue) + "]*)");
         }
 
