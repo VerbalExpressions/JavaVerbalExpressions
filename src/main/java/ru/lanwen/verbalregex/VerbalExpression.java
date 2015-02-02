@@ -533,6 +533,8 @@ public class VerbalExpression {
         /**
          * Add a alternative expression to be matched
          *
+         * Issue #32
+         *
          * @param pValue - the string to be looked for
          * @return this builder
          */
@@ -559,6 +561,7 @@ public class VerbalExpression {
          *
          * @param pValues - the strings to be looked for
          * @return this builder
+         * @since 1.3
          */
         public Builder oneOf(final String... pValues) {
             if(pValues != null && pValues.length > 0) {
