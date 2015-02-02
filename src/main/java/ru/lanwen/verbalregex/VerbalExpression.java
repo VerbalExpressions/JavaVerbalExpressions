@@ -552,6 +552,30 @@ public class VerbalExpression {
             }
             return this;
         }
+        
+        /**
+         * Adds an alternative expression to be matched
+         * based on an array of values
+         *
+         * @param pValues - the strings to be looked for
+         * @return this builder
+         */
+        public Builder oneOf(final String... pValues) {
+            if(pValues != null && pValues.length > 0) {
+        	this.add("(?:");
+        	for(int i = 0; i < pValues.length; i++) {
+        	    String value = pValues[i];
+        	    this.add("(?:");
+        	    this.add(value);
+        	    this.add(")");
+        	    if(i < pValues.length - 1) {
+        	        this.add("|");
+        	    }
+        	}
+        	this.add(")");
+            }
+            return this;
+        }
 
         /**
          * Adds capture - open brace to current position and closed to suffixes

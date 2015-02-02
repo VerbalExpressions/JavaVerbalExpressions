@@ -538,4 +538,45 @@ public class BasicFunctionalityUnitTest {
         assertThat(regexWithOneOrMore, matchesTo(empty));
         assertThat(regexWithOneOrMore, matchesExactly(empty));
     }
+    
+    @Test
+    public void testOneOf() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .oneOf("abc", "def")
+                .build();
+
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc nor def", testRegex, not(matchesTo("xyzabc")));
+    }
+    
+    @Test
+    public void testOneOfWithCapture() {
+        VerbalExpression testRegex = regex()
+                .capture()
+                .oneOf("abc", "def")
+                .build();
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
+        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("def"));
+    }
+
+    @Test
+    public void testOneOfWithClosedCapture() {
+        VerbalExpression testRegex = regex()
+                .capture()
+                .oneOf("abc", "def")
+                .endCapt()
+                .build();
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
+        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("def"));
+    }
 }

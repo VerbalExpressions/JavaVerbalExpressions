@@ -3,9 +3,8 @@ package ru.lanwen.verbalregex;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
 import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
 import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
@@ -107,5 +106,16 @@ public class RealWorldUnitTest {
     @Test
     @Ignore("Planned in 1.3")
     public void captureWithName() throws Exception {
+    }
+    
+    @Test
+    public void testStarWarsMovies() {
+	VerbalExpression regex = VerbalExpression.regex()
+		.find("Star Wars: ")
+		.oneOf("The Phantom Menace", "Attack of the Clones", "Revenge of the Sith", 
+			"The Force Awakens", "A New Hope", "The Empire Strikes Back", "Return of the Jedi")
+		.build();
+	assertTrue(regex.test("Star Wars: The Empire Strikes Back"));
+	assertTrue(regex.test("Star Wars: Return of the Jedi"));
     }
 }
