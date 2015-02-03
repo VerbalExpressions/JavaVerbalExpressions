@@ -2,5 +2,8 @@ language: java
 jdk:
  - openjdk7
  - oraclejdk7
+ 
+after_success:
+  - mvn clean cobertura:cobertura -Dcobertura.report.format=xml org.eluder.coveralls:coveralls-maven-plugin:3.0.1:report
 notifications:
  email: false
