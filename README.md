@@ -2,6 +2,7 @@ JavaVerbalExpressions
 =====================
 [![release](http://github-release-version.herokuapp.com/github/VerbalExpressions/JavaVerbalExpressions/release.svg?style=flat)](https://github.com/VerbalExpressions/JavaVerbalExpressions/releases/latest) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.lanwen.verbalregex/java-verbal-expressions/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/ru.lanwen.verbalregex/java-verbal-expressions)
 [<img src="http://img.shields.io/badge/ported%20from-%20JSVerbalExpressions-orange.svg?style=flat">](https://github.com/VerbalExpressions/JSVerbalExpressions)
+[![Coverage Status](https://coveralls.io/repos/VerbalExpressions/JavaVerbalExpressions/badge.svg)](https://coveralls.io/r/VerbalExpressions/JavaVerbalExpressions)
 
 VerbalExpressions is a Java library that helps to construct difficult regular expressions.
 
