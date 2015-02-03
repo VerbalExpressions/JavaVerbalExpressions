@@ -34,7 +34,7 @@ You can use *SNAPSHOT* dependency with adding to `pom.xml`:
 VerbalExpression testRegex = VerbalExpression.regex()
                                                 .startOfLine().then("http").maybe("s")
 	           				.then("://")
-	           				.maybe("www.").anythingButNot(" ")
+	           				.maybe("www.").anythingBut(" ")
 	           				.endOfLine()
 	           				.build();
 

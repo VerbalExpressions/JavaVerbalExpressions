@@ -20,7 +20,7 @@ public class RealWorldUnitTest {
                 .maybe("s")
                 .then("://")
                 .maybe("www.")
-                .anythingButNot(" ")
+                .anythingBut(" ")
                 .endOfLine()
                 .build();
 
