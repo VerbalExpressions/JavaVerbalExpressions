@@ -579,4 +579,20 @@ public class BasicFunctionalityUnitTest {
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
         assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("def"));
     }
+    
+    @Test
+    public void shouldAddMaybeWithOneOfFromAnotherBuilder() {
+	VerbalExpression.Builder namePrefix = regex().oneOf("Mr.", "Ms.");
+	VerbalExpression name = regex()
+		.maybe(namePrefix)
+		.space()
+		.zeroOrMore()
+		.word()
+		.oneOrMore()
+		.build();
+	
+	assertThat("Is a name with prefix", name, matchesTo("Mr. Bond"));
+	assertThat("Is a name without prefix", name, matchesTo("James"));
+	
+    }
 }

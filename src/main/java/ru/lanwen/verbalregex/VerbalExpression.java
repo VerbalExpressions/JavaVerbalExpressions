@@ -170,6 +170,10 @@ public class VerbalExpression {
         public Builder maybe(final String pValue) {
             return this.then(pValue).add("?");
         }
+        
+        public Builder maybe(final Builder regex) {
+            return this.group().add(regex.build().toString()).endGr().add("?");
+        }
 
         /**
          * Add expression that matches anything (includes empty string)
