@@ -1,10 +1,9 @@
 package ru.lanwen.verbalregex;
 
+import static java.lang.String.valueOf;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.lang.String.valueOf;
-import static ru.lanwen.verbalregex.VerbalExpression.regex;
 
 public class VerbalExpression {
 
@@ -191,7 +190,7 @@ public class VerbalExpression {
          * @return this builder
          */
         public Builder maybe(final Builder regex) {
-            return this.group().add(regex.build().toString()).endGr().add("?");
+            return this.group().add(regex).endGr().add("?");
         }
 
         /**
