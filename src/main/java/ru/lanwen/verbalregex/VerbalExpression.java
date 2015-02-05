@@ -1,9 +1,9 @@
 package ru.lanwen.verbalregex;
 
+import static java.lang.String.valueOf;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.lang.String.valueOf;
 
 public class VerbalExpression {
 
@@ -169,6 +169,28 @@ public class VerbalExpression {
          */
         public Builder maybe(final String pValue) {
             return this.then(pValue).add("?");
+        }
+        
+        /**
+         * Add a regex to the expression that might appear once (or not)
+         * Example:
+         * The following matches all names that have a prefix or not.
+         * VerbalExpression.Builder namePrefix = regex().oneOf("Mr.", "Ms.");
+	 * VerbalExpression name = regex()
+	 *	.maybe(namePrefix)
+	 *	.space()
+	 *	.zeroOrMore()
+	 *	.word()
+	 *	.oneOrMore()
+	 *	.build();
+         * regex.test("Mr. Bond/")    //true
+         * regex.test("James")   //true
+         *
+         * @param pValue - the string to be looked for
+         * @return this builder
+         */
+        public Builder maybe(final Builder regex) {
+            return this.group().add(regex).endGr().add("?");
         }
 
         /**
