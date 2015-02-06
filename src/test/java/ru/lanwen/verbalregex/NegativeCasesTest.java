@@ -71,7 +71,7 @@ public class NegativeCasesTest {
         VerbalExpression regex = regex().multiple("some", null).build();
 
         assertThat("Multiply with null should be equal to oneOrMore",
-                regex.toString(), equalTo(regex().find("some").oneOrMore().build().toString()));
+                regex.toString(), equalTo(regex().oneOrMore("some").build().toString()));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class NegativeCasesTest {
         VerbalExpression regex = regex().multiple("some", 1, 2, 3).build();
 
         assertThat("Multiply with 3 args should be equal to oneOrMore",
-                regex.toString(), equalTo(regex().find("some").oneOrMore().build().toString()));
+                regex.toString(), equalTo(regex().oneOrMore("some").build().toString()));
     }
 
     @Test(expected = java.util.regex.PatternSyntaxException.class)

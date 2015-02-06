@@ -473,7 +473,7 @@ public class VerbalExpression {
          */
         public Builder multiple(final String pValue, final int... count) {
             if (count == null) {
-                return this.then(pValue).oneOrMore();
+                return this.oneOrMore(pValue);
             }
             switch (count.length) {
                 case 1:
@@ -481,7 +481,7 @@ public class VerbalExpression {
                 case 2:
                     return this.then(pValue).count(count[0], count[1]);
                 default:
-                    return this.then(pValue).oneOrMore();
+                    return this.oneOrMore(pValue);
             }
         }
 
@@ -493,8 +493,8 @@ public class VerbalExpression {
          * @return this builder
          * @since 1.2
          */
-        public Builder oneOrMore() {
-            return this.add("+");
+        public Builder oneOrMore(String pValue) {
+            return this.then(pValue).add("+");
         }
 
         /**
@@ -504,8 +504,8 @@ public class VerbalExpression {
          * @return this builder
          * @since 1.2
          */
-        public Builder zeroOrMore() {
-            return this.add("*");
+        public Builder zeroOrMore(String pValue) {
+            return this.then(pValue).add("*");
         }
 
         /**
