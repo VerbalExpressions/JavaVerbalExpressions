@@ -300,9 +300,20 @@ public class BasicFunctionalityUnitTest {
     }
 
     @Test
-    public void testWithAnyCaseIsFalse() {
+    public void testWithAnyCaseTurnOnThenTurnOff() {
         VerbalExpression testRegex = regex()
                 .withAnyCase()
+                .startOfLine()
+                .then("a")
+                .withAnyCase(false)
+                .build();
+
+        assertThat(testRegex, not(matchesTo("A")));
+    }
+
+    @Test
+    public void testWithAnyCaseIsFalse() {
+        VerbalExpression testRegex = regex()
                 .startOfLine()
                 .then("a")
                 .withAnyCase(false)

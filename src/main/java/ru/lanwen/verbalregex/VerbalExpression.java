@@ -397,25 +397,25 @@ public class VerbalExpression {
         public Builder removeModifier(final char pModifier) {
             switch (pModifier) {
                 case 'd':
-                    modifiers ^= Pattern.UNIX_LINES;
+                    modifiers &= ~Pattern.UNIX_LINES;
                     break;
                 case 'i':
-                    modifiers ^= Pattern.CASE_INSENSITIVE;
+                    modifiers &= ~Pattern.CASE_INSENSITIVE;
                     break;
                 case 'x':
-                    modifiers ^= Pattern.COMMENTS;
+                    modifiers &= ~Pattern.COMMENTS;
                     break;
                 case 'm':
-                    modifiers ^= Pattern.MULTILINE;
+                    modifiers &= ~Pattern.MULTILINE;
                     break;
                 case 's':
-                    modifiers ^= Pattern.DOTALL;
+                    modifiers &= ~Pattern.DOTALL;
                     break;
                 case 'u':
-                    modifiers ^= Pattern.UNICODE_CASE;
+                    modifiers &= ~Pattern.UNICODE_CASE;
                     break;
                 case 'U':
-                    modifiers ^= Pattern.UNICODE_CHARACTER_CLASS;
+                    modifiers &= ~Pattern.UNICODE_CHARACTER_CLASS;
                     break;
                 default:
                     break;
