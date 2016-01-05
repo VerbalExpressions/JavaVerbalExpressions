@@ -2,6 +2,8 @@ package ru.lanwen.verbalregex;
 
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
@@ -605,5 +607,24 @@ public class BasicFunctionalityUnitTest {
 	assertThat("Is a name with prefix", name, matchesTo("Mr. Bond"));
 	assertThat("Is a name without prefix", name, matchesTo("James"));
 	
+    }
+    
+    @Test
+    public void testListOfTextGroups() {
+        String text = "abczbcayyy";
+        VerbalExpression regex = regex()
+                .capture()
+                .oneOf("abc", "bca", "yyy")
+                .build();
+        
+        List<String> groups = regex.getTextGroups(text, 1);
+
+        assertThat(groups.get(0), equalTo("abc"));
+        assertThat(groups.get(1), equalTo("bca"));
+        assertThat(groups.get(2), equalTo("yyy"));
+        
+        String concatenatedText = groups.get(0) + groups.get(1) + groups.get(2);
+        
+        assertThat(regex.getText(text, 1), equalTo(concatenatedText));
     }
 }
