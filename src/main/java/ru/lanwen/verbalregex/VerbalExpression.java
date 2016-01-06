@@ -2,6 +2,8 @@ package ru.lanwen.verbalregex;
 
 import static java.lang.String.valueOf;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -746,6 +748,21 @@ public class VerbalExpression {
         return result.toString();
     }
 
+    /**
+     * Extract exact group from string and add it to list
+     *
+     * @param toTest - string to extract from
+     * @param group  - group to extract
+     * @return list of extracted groups
+     */
+    public List<String> getTextGroups(final String toTest, final int group) {
+        List<String> groups = new ArrayList<>();
+        Matcher m = pattern.matcher(toTest);
+        while (m.find()) {
+            groups.add(m.group(group));
+        }
+        return groups;
+    }
 
     @Override
     public String toString() {
