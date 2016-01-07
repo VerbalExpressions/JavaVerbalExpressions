@@ -11,10 +11,10 @@ public class VerbalExpression {
 
     public static class Builder {
 
-        private StringBuilder prefixes = new StringBuilder();
-        private StringBuilder source = new StringBuilder();
-        private StringBuilder suffixes = new StringBuilder();
-        private int modifiers = Pattern.MULTILINE;
+        private StringBuilder prefixes;
+        private StringBuilder source;
+        private StringBuilder suffixes;
+        private int modifiers;
 
         /**
          * Package private. Use {@link #regex()} to build a new one
@@ -22,6 +22,29 @@ public class VerbalExpression {
          * @since 1.2
          */
         Builder() {
+            this("", "", "", Pattern.MULTILINE);
+        }
+        
+        /**
+         * Package private. Use {@link #regex(Builder)} to build a new one
+         * 
+         * @since 1.2
+         */
+        Builder(Builder builder){
+            this(builder.prefixes.toString(), builder.source.toString(), builder.suffixes.toString(),
+                    builder.modifiers);
+        }
+
+        /**
+         * Package private. Use parameters to build a new one
+         * 
+         * @since 1.2
+         */
+        Builder(String prefixesStr, String sourceStr, String suffixesStr, int modifiers) {
+            this.prefixes = new StringBuilder(prefixesStr);
+            this.source = new StringBuilder(sourceStr);
+            this.suffixes = new StringBuilder(suffixesStr);
+            this.modifiers = modifiers;
         }
 
         /**
@@ -760,14 +783,7 @@ public class VerbalExpression {
      * @since 1.1
      */
     public static Builder regex(final Builder pBuilder) {
-        Builder builder = new Builder();
-
-        builder.prefixes = new StringBuilder(pBuilder.prefixes);
-        builder.source = new StringBuilder(pBuilder.source);
-        builder.suffixes = new StringBuilder(pBuilder.suffixes);
-        builder.modifiers = pBuilder.modifiers;
-
-        return builder;
+        return new Builder(pBuilder);
     }
 
     /**
