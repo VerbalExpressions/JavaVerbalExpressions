@@ -779,9 +779,10 @@ public class VerbalExpression {
     public static Builder regex(final Builder pBuilder) {
         Builder builder = new Builder();
 
-        builder.prefixes = new StringBuilder(pBuilder.prefixes);
-        builder.source = new StringBuilder(pBuilder.source);
-        builder.suffixes = new StringBuilder(pBuilder.suffixes);
+        //Using created StringBuilder
+        builder.prefixes.append(pBuilder.prefixes);
+        builder.source.append(pBuilder.source);
+        builder.suffixes.append(pBuilder.suffixes);
         builder.modifiers = pBuilder.modifiers;
 
         return builder;
