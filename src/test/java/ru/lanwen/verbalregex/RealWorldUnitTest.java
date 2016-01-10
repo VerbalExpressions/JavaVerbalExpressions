@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
 import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
@@ -117,5 +118,19 @@ public class RealWorldUnitTest {
                 .build();
         assertThat(regex, matchesTo("Star Wars: The Empire Strikes Back"));
         assertThat(regex, matchesTo("Star Wars: Return of the Jedi"));
+    }
+
+    @Test
+    public void captureAfterNewLineHasGroupNumberOne() throws Exception {
+
+        final String line_break = "\n";
+        final String some = "some";
+        final String text = " text";
+        final VerbalExpression expression = VerbalExpression.regex().
+                        lineBreak()
+                        .capture().find(some).endCapture().then(text)
+                        .build();
+
+        assertEquals(some, expression.getText(line_break + some + text, 1));
     }
 }
