@@ -750,6 +750,12 @@ public class VerbalExpression {
 
     /**
      * Extract exact group from string and add it to list
+     * 
+     * Example:
+     * String text = "SampleHelloWorldString";
+     * VerbalExpression regex = regex().capt().oneOf("Hello", "World").endCapt().maybe("String").build();
+     * list = regex.getTextGroups(text, 0) //result: "Hello", "WorldString"
+     * list = regex.getTextGroups(text, 1) //result: "Hello", "World"
      *
      * @param toTest - string to extract from
      * @param group  - group to extract
