@@ -611,20 +611,22 @@ public class BasicFunctionalityUnitTest {
     
     @Test
     public void testListOfTextGroups() {
-        String text = "abczbcayyy";
+        String text = "SampleHelloWorldString";
         VerbalExpression regex = regex()
-                .capture()
-                .oneOf("abc", "bca", "yyy")
+                .capt()
+                .oneOf("Hello", "World")
+                .endCapt()
+                .maybe("String")
                 .build();
         
-        List<String> groups = regex.getTextGroups(text, 1);
+        List<String> groups0 = regex.getTextGroups(text, 0);
 
-        assertThat(groups.get(0), equalTo("abc"));
-        assertThat(groups.get(1), equalTo("bca"));
-        assertThat(groups.get(2), equalTo("yyy"));
-        
-        String concatenatedText = groups.get(0) + groups.get(1) + groups.get(2);
-        
-        assertThat(regex.getText(text, 1), equalTo(concatenatedText));
+        assertThat(groups0.get(0), equalTo("Hello"));
+        assertThat(groups0.get(1), equalTo("WorldString"));
+
+        List<String> groups1 = regex.getTextGroups(text, 1);
+
+        assertThat(groups1.get(0), equalTo("Hello"));
+        assertThat(groups1.get(1), equalTo("World"));
     }
 }
