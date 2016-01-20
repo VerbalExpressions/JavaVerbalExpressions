@@ -179,6 +179,18 @@ public class BasicFunctionalityUnitTest {
     }
 
     @Test
+    public void testMacintoshLineBreak() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .then("abc")
+                .lineBreak()
+                .then("def")
+                .build();
+
+        assertThat("abc then line break then def", testRegex, matchesTo("abc\r\rdef"));
+    }
+
+    @Test
     public void testBr() {
         VerbalExpression testRegexBr = new VerbalExpression.Builder()
                 .startOfLine()
