@@ -233,7 +233,7 @@ public class VerbalExpression {
          * @return this builder
          */
         public Builder lineBreak() {
-            return this.add("(?:\\n|(?:\\r\\n))");
+            return this.add("(?:\\n|(?:\\r\\n)|(?:\\r\\r))");
         }
 
         /**
