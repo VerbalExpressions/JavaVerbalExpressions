@@ -188,7 +188,7 @@ public class VerbalExpression {
          * regex.test("Mr. Bond/")    //true
          * regex.test("James")   //true
          *
-         * @param pValue - the string to be looked for
+         * @param regex - the string to be looked for
          * @return this builder
          */
         public Builder maybe(final Builder regex) {
