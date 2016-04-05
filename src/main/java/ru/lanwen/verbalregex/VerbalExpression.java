@@ -3,7 +3,9 @@ package ru.lanwen.verbalregex;
 import static java.lang.String.valueOf;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,16 @@ public class VerbalExpression {
         private StringBuilder source = new StringBuilder();
         private StringBuilder suffixes = new StringBuilder();
         private int modifiers = Pattern.MULTILINE;
+
+        private static final Map<Character, Integer> SYMBOL_MAP = new HashMap<Character, Integer>() {{
+            put('d', Pattern.UNIX_LINES);
+            put('i', Pattern.CASE_INSENSITIVE);
+            put('x', Pattern.COMMENTS);
+            put('m', Pattern.MULTILINE);
+            put('s', Pattern.DOTALL);
+            put('u', Pattern.UNICODE_CASE);
+            put('U', Pattern.UNICODE_CHARACTER_CLASS);
+        }};
 
         /**
          * Package private. Use {@link #regex()} to build a new one
@@ -172,7 +184,7 @@ public class VerbalExpression {
         public Builder maybe(final String pValue) {
             return this.then(pValue).add("?");
         }
-        
+
         /**
          * Add a regex to the expression that might appear once (or not)
          * Example:
@@ -367,60 +379,16 @@ public class VerbalExpression {
         }
 
         public Builder addModifier(final char pModifier) {
-            switch (pModifier) {
-                case 'd':
-                    modifiers |= Pattern.UNIX_LINES;
-                    break;
-                case 'i':
-                    modifiers |= Pattern.CASE_INSENSITIVE;
-                    break;
-                case 'x':
-                    modifiers |= Pattern.COMMENTS;
-                    break;
-                case 'm':
-                    modifiers |= Pattern.MULTILINE;
-                    break;
-                case 's':
-                    modifiers |= Pattern.DOTALL;
-                    break;
-                case 'u':
-                    modifiers |= Pattern.UNICODE_CASE;
-                    break;
-                case 'U':
-                    modifiers |= Pattern.UNICODE_CHARACTER_CLASS;
-                    break;
-                default:
-                    break;
+            if (SYMBOL_MAP.containsKey(pModifier)) {
+                modifiers |= SYMBOL_MAP.get(pModifier);
             }
 
             return this;
         }
 
         public Builder removeModifier(final char pModifier) {
-            switch (pModifier) {
-                case 'd':
-                    modifiers &= ~Pattern.UNIX_LINES;
-                    break;
-                case 'i':
-                    modifiers &= ~Pattern.CASE_INSENSITIVE;
-                    break;
-                case 'x':
-                    modifiers &= ~Pattern.COMMENTS;
-                    break;
-                case 'm':
-                    modifiers &= ~Pattern.MULTILINE;
-                    break;
-                case 's':
-                    modifiers &= ~Pattern.DOTALL;
-                    break;
-                case 'u':
-                    modifiers &= ~Pattern.UNICODE_CASE;
-                    break;
-                case 'U':
-                    modifiers &= ~Pattern.UNICODE_CHARACTER_CLASS;
-                    break;
-                default:
-                    break;
+            if (SYMBOL_MAP.containsKey(pModifier)) {
+                modifiers &= ~SYMBOL_MAP.get(pModifier);
             }
 
             return this;
@@ -578,7 +546,7 @@ public class VerbalExpression {
             }
             return this;
         }
-        
+
         /**
          * Adds an alternative expression to be matched
          * based on an array of values
@@ -750,7 +718,7 @@ public class VerbalExpression {
 
     /**
      * Extract exact group from string and add it to list
-     * 
+     *
      * Example:
      * String text = "SampleHelloWorldString";
      * VerbalExpression regex = regex().capt().oneOf("Hello", "World").endCapt().maybe("String").build();
