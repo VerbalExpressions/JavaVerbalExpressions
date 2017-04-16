@@ -8,7 +8,7 @@ VerbalExpressions is a Java library that helps to construct difficult regular ex
 
 
 
-##Getting Started
+## Getting Started
 
 Maven Dependency:
 
@@ -30,7 +30,7 @@ You can use *SNAPSHOT* dependency with adding to `pom.xml`:
 </repositories>
 ```
 
-##Examples
+## Examples
 ```java
 VerbalExpression testRegex = VerbalExpression.regex()
                                                 .startOfLine().then("http").maybe("s")
