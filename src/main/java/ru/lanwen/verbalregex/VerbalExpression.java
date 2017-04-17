@@ -35,7 +35,7 @@ public class VerbalExpression {
          *
          * @since 1.2
          */
-        //Gabor comment
+       
         Builder() {
         }
 
