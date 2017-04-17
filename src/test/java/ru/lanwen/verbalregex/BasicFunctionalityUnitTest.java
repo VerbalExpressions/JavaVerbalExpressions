@@ -10,7 +10,7 @@ import static ru.lanwen.verbalregex.VerbalExpression.regex;
 import static ru.lanwen.verbalregex.matchers.EqualToRegexMatcher.equalToRegex;
 import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
 import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
-Gabor
+
 public class BasicFunctionalityUnitTest {
     @Test
     public void testSomething() {
