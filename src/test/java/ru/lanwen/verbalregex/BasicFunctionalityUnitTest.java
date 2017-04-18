@@ -240,7 +240,7 @@ public class BasicFunctionalityUnitTest {
                     .build();
        VerbalExpression testRegexStringAndNull = new VerbalExpression.Builder()
                            .startOfLine()
-                           .multiple("abc", null)
+                           .multiple("abc")
                            .build();
        VerbalExpression testRegexMoreThan2Ints = new VerbalExpression.Builder()
                            .startOfLine()

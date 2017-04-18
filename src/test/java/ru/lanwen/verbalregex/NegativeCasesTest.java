@@ -68,7 +68,7 @@ public class NegativeCasesTest {
 
     @Test
     public void multiplyWithNullOnCountEqualToWithOneAndMore() throws Exception {
-        VerbalExpression regex = regex().multiple("some", null).build();
+        VerbalExpression regex = regex().multiple("some").build();
 
         assertThat("Multiply with null should be equal to oneOrMore",
                 regex.toString(), equalTo(regex().find("some").oneOrMore().build().toString()));
