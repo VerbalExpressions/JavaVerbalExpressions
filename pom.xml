@@ -64,7 +64,6 @@
 	    <dependency>
 	      <groupId>org.jbehave</groupId>
 	      <artifactId>jbehave-core</artifactId>
-	      <version>4.0.0</version>
 	    </dependency>
 	</dependencies>
 
