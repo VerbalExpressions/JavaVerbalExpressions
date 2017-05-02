@@ -60,13 +60,6 @@
 		</dependency>
     </dependencies>
 
-	<dependencies>
-	    <dependency>
-	      <groupId>org.jbehave</groupId>
-	      <artifactId>jbehave-core</artifactId>
-	    </dependency>
-	</dependencies>
-
     <build>
         <plugins>
             <plugin>
