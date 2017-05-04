@@ -1,5 +1,6 @@
+Narrative: narrative
 Scenario: teszt
 
-Given a verbalexpression
-When I try to getText abc
-Then it prints out false
+Given a String What
+When I examine if it matches to the testRegex
+Then it matches to the String What

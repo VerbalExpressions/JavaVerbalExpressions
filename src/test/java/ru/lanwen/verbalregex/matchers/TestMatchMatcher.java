@@ -1,9 +1,9 @@
-package run.lanwen.verbalregex.matchers;
+package ru.lanwen.verbalregex.matchers;
 
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.TypeSafeMatcher;
-import run.lanwen.verbalregex.VerbalExpression;
+import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
  * User: lanwen

@@ -1,4 +1,4 @@
-package run.lanwen.verbalregex;
+package ru.lanwen.verbalregex;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -6,9 +6,9 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static run.lanwen.verbalregex.VerbalExpression.regex;
-import static run.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
-import static run.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
+import static ru.lanwen.verbalregex.VerbalExpression.regex;
+import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
+import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
 
 
 public class RealWorldUnitTest {

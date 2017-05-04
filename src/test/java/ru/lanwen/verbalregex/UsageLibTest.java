@@ -1,4 +1,4 @@
-package run.lanwen.verbalregex;
+package ru.lanwen.verbalregex;
 
 import org.junit.Test;
 

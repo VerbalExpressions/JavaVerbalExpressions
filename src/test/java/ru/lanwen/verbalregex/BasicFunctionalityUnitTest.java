@@ -1,4 +1,4 @@
-package run.lanwen.verbalregex;
+package ru.lanwen.verbalregex;
 
 import org.junit.Test;
 
@@ -6,10 +6,10 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static run.lanwen.verbalregex.VerbalExpression.regex;
-import static run.lanwen.verbalregex.matchers.EqualToRegexMatcher.equalToRegex;
-import static run.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
-import static run.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
+import static ru.lanwen.verbalregex.VerbalExpression.regex;
+import static ru.lanwen.verbalregex.matchers.EqualToRegexMatcher.equalToRegex;
+import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
+import static ru.lanwen.verbalregex.matchers.TestsExactMatcher.matchesExactly;
 
 public class BasicFunctionalityUnitTest {
     @Test
