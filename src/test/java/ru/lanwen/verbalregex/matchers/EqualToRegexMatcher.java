@@ -1,8 +1,8 @@
-package ru.lanwen.verbalregex.matchers;
+package run.lanwen.verbalregex.matchers;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import ru.lanwen.verbalregex.VerbalExpression;
+import run.lanwen.verbalregex.VerbalExpression;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 

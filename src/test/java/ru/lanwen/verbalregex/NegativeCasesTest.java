@@ -1,4 +1,4 @@
-package ru.lanwen.verbalregex;
+package run.lanwen.verbalregex;
 
 import org.junit.Test;
 
@@ -7,8 +7,8 @@ import java.util.regex.PatternSyntaxException;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static ru.lanwen.verbalregex.VerbalExpression.regex;
-import static ru.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
+import static run.lanwen.verbalregex.VerbalExpression.regex;
+import static run.lanwen.verbalregex.matchers.TestMatchMatcher.matchesTo;
 
 /**
  * User: lanwen
