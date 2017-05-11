@@ -1,8 +1,10 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import java.util.Stack;
 

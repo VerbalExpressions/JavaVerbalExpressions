@@ -1,4 +1,4 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 /**
  * Created by soos on 2017.05.03..

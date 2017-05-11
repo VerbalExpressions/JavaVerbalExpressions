@@ -1,6 +1,8 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 import org.junit.Test;
+
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsNot.not;

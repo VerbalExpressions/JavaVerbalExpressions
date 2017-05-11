@@ -1,7 +1,9 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;

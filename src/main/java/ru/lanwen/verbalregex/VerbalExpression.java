@@ -36,7 +36,7 @@ public class VerbalExpression {
          * @since 1.2
          */
        
-        Builder() {
+        public Builder() {
         }
 
         /**

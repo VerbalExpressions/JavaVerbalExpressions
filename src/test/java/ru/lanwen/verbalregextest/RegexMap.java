@@ -1,4 +1,4 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 import net.serenitybdd.jbehave.SerenityStories;
 import net.serenitybdd.jbehave.SerenityStory;
