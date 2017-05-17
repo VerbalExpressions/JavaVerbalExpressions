@@ -11,7 +11,7 @@ import ru.lanwen.verbalregex.VerbalExpression;
 public class ForMoreCovarege {
 
 	@Test
-    public void testSearchOneLine() {
+	public void testSearchOneLine() {
         VerbalExpression testRegex = regex()
                 .startOfLine()
                 .then("a")

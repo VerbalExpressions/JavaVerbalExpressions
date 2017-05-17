@@ -10,7 +10,7 @@ public class RegexMap extends SerenityStories {
     public RegexMap() {
         String storyPattern = "/resources/*.story";
         if (storyPattern != null) {
-            findStoriesCalled("regexmap.story");
+            findStoriesCalled("*.story");
         }
     }
 
