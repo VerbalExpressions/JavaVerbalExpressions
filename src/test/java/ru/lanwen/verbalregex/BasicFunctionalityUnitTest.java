@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.util.List;
 
+import java.util.regex.MatchResult;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
@@ -227,13 +229,13 @@ public class BasicFunctionalityUnitTest {
                     .startOfLine()
                     .word()
                     .build();
-       
+
        assertThat("word", testRegex, matchesTo("abc123"));
        assertThat("non-word", testRegex, not(matchesTo("@#")));
     }
-    
+
     @Test
-    public void testMultipleNoRange() {        
+    public void testMultipleNoRange() {
        VerbalExpression testRegexStringOnly = new VerbalExpression.Builder()
                     .startOfLine()
                     .multiple("abc")
@@ -247,54 +249,54 @@ public class BasicFunctionalityUnitTest {
                            .multiple("abc", 2, 4, 8)
                            .build();
        VerbalExpression[] testRegexesSameBehavior = {
-                           testRegexStringOnly, 
+                           testRegexStringOnly,
                            testRegexStringAndNull,
                            testRegexMoreThan2Ints
                     };
        for (VerbalExpression testRegex : testRegexesSameBehavior) {
-             assertThat("abc once", testRegex, 
+             assertThat("abc once", testRegex,
                            matchesTo("abc"));
-             assertThat("abc more than once", testRegex, 
+             assertThat("abc more than once", testRegex,
                            matchesTo("abcabcabc"));
-             assertThat("no abc", testRegex, 
+             assertThat("no abc", testRegex,
                            not(matchesTo("xyz")));
        }
     }
-    
+
     @Test
-    public void testMultipleFrom() { 
+    public void testMultipleFrom() {
        VerbalExpression testRegexFrom = new VerbalExpression.Builder()
                            .startOfLine()
                            .multiple("abc", 2)
                            .build();
-       assertThat("no abc", testRegexFrom, 
+       assertThat("no abc", testRegexFrom,
                     not(matchesTo("xyz")));
-       assertThat("abc less than 2 times", testRegexFrom, 
+       assertThat("abc less than 2 times", testRegexFrom,
                     not(matchesTo("abc")));
-       assertThat("abc exactly 2 times", testRegexFrom, 
+       assertThat("abc exactly 2 times", testRegexFrom,
                     matchesTo("abcabc"));
-       assertThat("abc more than 2 times", testRegexFrom, 
+       assertThat("abc more than 2 times", testRegexFrom,
                     matchesTo("abcabcabc"));
     }
-    
+
     @Test
-    public void testMultipleFromTo() { 
+    public void testMultipleFromTo() {
        VerbalExpression testRegexFromTo = new VerbalExpression.Builder()
                            .startOfLine()
                            .multiple("abc", 2, 4)
                            .build();
        assertThat("no abc", testRegexFromTo, not(matchesTo("xyz")));
-       assertThat("abc less than 2 times", testRegexFromTo, 
+       assertThat("abc less than 2 times", testRegexFromTo,
                     not(matchesTo("abc")));
        assertThat("abc exactly 2 times", testRegexFromTo, matchesTo("abcabc"));
-       assertThat("abc between 2 and 4 times", testRegexFromTo, 
+       assertThat("abc between 2 and 4 times", testRegexFromTo,
                     matchesTo("abcabcabc"));
-       assertThat("abc exactly 4 times", testRegexFromTo, 
+       assertThat("abc exactly 4 times", testRegexFromTo,
                     matchesTo("abcabcabcabc"));
-       assertThat("abc more than 4 times", testRegexFromTo, 
+       assertThat("abc more than 4 times", testRegexFromTo,
                     not(matchesExactly("abcabcabcabcabc")));
     }
-    
+
     @Test
     public void testWithAnyCase() {
         VerbalExpression testRegex = new VerbalExpression.Builder()
@@ -563,7 +565,7 @@ public class BasicFunctionalityUnitTest {
         assertThat(regexWithOneOrMore, matchesTo(empty));
         assertThat(regexWithOneOrMore, matchesExactly(empty));
     }
-    
+
     @Test
     public void testOneOf() {
         VerbalExpression testRegex = new VerbalExpression.Builder()
@@ -575,7 +577,7 @@ public class BasicFunctionalityUnitTest {
         assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
         assertThat("Doesn't start with abc nor def", testRegex, not(matchesTo("xyzabc")));
     }
-    
+
     @Test
     public void testOneOfWithCapture() {
         VerbalExpression testRegex = regex()
@@ -604,7 +606,7 @@ public class BasicFunctionalityUnitTest {
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
         assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("def"));
     }
-    
+
     @Test
     public void shouldAddMaybeWithOneOfFromAnotherBuilder() {
 	VerbalExpression.Builder namePrefix = regex().oneOf("Mr.", "Ms.");
@@ -615,12 +617,12 @@ public class BasicFunctionalityUnitTest {
 		.word()
 		.oneOrMore()
 		.build();
-	
+
 	assertThat("Is a name with prefix", name, matchesTo("Mr. Bond"));
 	assertThat("Is a name without prefix", name, matchesTo("James"));
-	
+
     }
-    
+
     @Test
     public void testListOfTextGroups() {
         String text = "SampleHelloWorldString";
@@ -630,7 +632,7 @@ public class BasicFunctionalityUnitTest {
                 .endCapt()
                 .maybe("String")
                 .build();
-        
+
         List<String> groups0 = regex.getTextGroups(text, 0);
 
         assertThat(groups0.get(0), equalTo("Hello"));
@@ -641,4 +643,37 @@ public class BasicFunctionalityUnitTest {
         assertThat(groups1.get(0), equalTo("Hello"));
         assertThat(groups1.get(1), equalTo("World"));
     }
+
+    @Test
+    public void testListOfGroupSpans() {
+        String text = "SampleHelloWorldStringHello";
+        VerbalExpression regex = regex()
+                .capt()
+                .oneOf("Hello", "World")
+                .endCapt()
+                .maybe("String")
+                .build();
+
+        List<MatchResult> results = regex.getAllGroupSpans(text);
+
+        assertThat(results.size(), equalTo(3));
+
+        assertThat(results.get(0).groupCount(), equalTo(1));
+        assertThat(results.get(1).groupCount(), equalTo(1));
+        assertThat(results.get(2).groupCount(), equalTo(1));
+
+        // Hello
+        assertThat(results.get(0).start(1), equalTo(6));
+        assertThat(results.get(0).end(1), equalTo(11));
+
+        // World
+        assertThat(results.get(1).start(1), equalTo(11));
+        assertThat(results.get(1).end(1), equalTo(16));
+
+        // Hello
+        assertThat(results.get(2).start(1), equalTo(22));
+        assertThat(results.get(2).end(1), equalTo(27));
+
+    }
+
 }

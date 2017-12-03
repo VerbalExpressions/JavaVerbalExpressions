@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.MatchResult;
 
 public class VerbalExpression {
 
@@ -736,6 +737,27 @@ public class VerbalExpression {
             groups.add(m.group(group));
         }
         return groups;
+    }
+
+    /**
+     * Expose all matches' spans and group spans
+     *
+     * See test code for an example.
+     *
+     * Note that each MatchResult contains all results of a single regex group,
+     * whereas the number of MatchResult objects in the result list is equal to
+     * the number of regex groups defined in the regex pattern.
+     *
+     * @param toTest - string to extract from
+     * @return list of MatchResult objects
+     */
+    public List<MatchResult> getAllGroupSpans(final String toTest) {
+        List<MatchResult> results = new ArrayList<MatchResult>();
+        Matcher m = pattern.matcher(toTest);
+        while (m.find()) {
+            results.add(m.toMatchResult());
+        }
+        return results;
     }
 
     @Override
