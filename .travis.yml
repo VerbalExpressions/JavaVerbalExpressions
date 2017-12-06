@@ -1,10 +1,37 @@
 language: java
 sudo: false
+
 jdk:
- - openjdk7
- - oraclejdk7
- 
+ - oraclejdk8
+
+install:
+  - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+
+before_install:
+  - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import; fi
+  - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
+
 after_success:
   - mvn clean cobertura:cobertura -Dcobertura.report.format=xml org.eluder.coveralls:coveralls-maven-plugin:3.0.1:report
+
 notifications:
  email: false
+
+deploy:
+  - provider: script
+    script: .travis/deploy.sh
+    skip_cleanup: true
+    on:
+      repo: VerbalExpressions/JavaVerbalExpressions
+      branch: master
+  - provider: script
+    script: .travis/deploy.sh
+    skip_cleanup: true
+    on:
+      repo: VerbalExpressions/JavaVerbalExpressions
+      tags: true
+
+
+cache:
+  directories:
+    - $HOME/.m2

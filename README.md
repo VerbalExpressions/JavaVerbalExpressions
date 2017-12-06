@@ -108,3 +108,8 @@ You can view all implementations on [VerbalExpressions.github.io](http://VerbalE
 [Groovy](https://github.com/VerbalExpressions/GroovyVerbalExpressions) - 
 [Haskell](https://github.com/VerbalExpressions/HaskellVerbalExpressions) - 
 [C++](https://github.com/VerbalExpressions/CppVerbalExpressions) - ... ([moarr](https://github.com/VerbalExpressions)) ] 
+
+## Project released with travis
+
+With help of this tutorial:
+https://dracoblue.net/dev/uploading-snapshots-and-releases-to-maven-central-with-travis/
