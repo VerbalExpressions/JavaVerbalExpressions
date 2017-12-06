@@ -1,0 +1,5 @@
+Bundle-Name: ${project.name}
+Bundle-Version: ${project.version}
+Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
+Export-Package: ru.lanwen.verbalregex
+Import-Package: *
