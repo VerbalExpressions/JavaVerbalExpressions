@@ -1,0 +1,5 @@
+<root>
+    <item name='org.jbehave.core.annotations.Then'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>

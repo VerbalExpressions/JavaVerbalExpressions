@@ -1,7 +1,9 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -103,10 +105,11 @@ public class RealWorldUnitTest {
         assertThat(regex().add("[A-Z0-1!-|]").build().toString(), equalTo("[A-Z0-1!-|]"));
 
     }
-
+    
     @Test
     @Ignore("Planned in 1.3")
     public void captureWithName() throws Exception {
+    	//this method will be used in version 1.3
     }
 
     @Test

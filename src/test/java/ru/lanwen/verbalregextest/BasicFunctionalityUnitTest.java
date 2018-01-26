@@ -1,6 +1,8 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 import org.junit.Test;
+
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import java.util.List;
 
@@ -344,6 +346,7 @@ public class BasicFunctionalityUnitTest {
                 .br()
                 .then("b")
                 .endOfLine()
+				.searchOneLine(false)
                 .build();
 
         assertThat("b is on the second line", testRegex, matchesTo("a\nb"));
@@ -576,6 +579,30 @@ public class BasicFunctionalityUnitTest {
         assertThat("Doesn't start with abc nor def", testRegex, not(matchesTo("xyzabc")));
     }
     
+	@Test
+    public void testOneOfWithNull() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .oneOf(null)
+                .build();
+
+        assertThat("Starts with null", testRegex, matchesTo("defzzz"));
+        
+       
+    }
+	
+	@Test
+    public void testOneOfWithEmptyString() {
+        VerbalExpression testRegex = new VerbalExpression.Builder()
+                .startOfLine()
+                .oneOf("")
+                .build();
+
+        assertThat("Starts with an empty string", testRegex, matchesTo("defzzz"));
+        
+        
+    }
+	
     @Test
     public void testOneOfWithCapture() {
         VerbalExpression testRegex = regex()

@@ -1,6 +1,8 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 import org.junit.Test;
+
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import java.util.regex.PatternSyntaxException;
 
@@ -82,7 +84,7 @@ public class NegativeCasesTest {
                 regex.toString(), equalTo(regex().find("some").oneOrMore().build().toString()));
     }
 
-    @Test(expected = java.util.regex.PatternSyntaxException.class)
+    @Test(expected = PatternSyntaxException.class)
     public void twoOpenCaptsWithOrThrowSyntaxException() throws Exception {
         VerbalExpression regex = regex().capt().capt().or("0").build();
         String ignored = regex.toString();

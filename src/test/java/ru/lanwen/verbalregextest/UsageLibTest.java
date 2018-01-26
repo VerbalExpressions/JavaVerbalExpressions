@@ -1,6 +1,8 @@
-package ru.lanwen.verbalregex;
+package ru.lanwen.verbalregextest;
 
 import org.junit.Test;
+
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsNot.not;
@@ -33,8 +35,17 @@ public class UsageLibTest {
     }
 
     @Test
-    public void clonedBuilderCantChangeOriginal() {
-        VerbalExpression.Builder builder = VerbalExpression.regex().anything().addModifier('i');
+    public void clonedBuilderCantChangeOriginal2() {
+        VerbalExpression.Builder builder = VerbalExpression.regex().anything().addModifier('a');
+        VerbalExpression.Builder clonedBuilder = VerbalExpression.regex(builder).endOfLine();
+
+        assertThat("Cloned builder changed after creating new one",
+                builder.build().toString(), not(clonedBuilder.build().toString()));
+    }
+	
+	@Test
+	public void clonedBuilderCantChangeOriginal3() {
+        VerbalExpression.Builder builder = VerbalExpression.regex().anything().removeModifier('a');
         VerbalExpression.Builder clonedBuilder = VerbalExpression.regex(builder).endOfLine();
 
         assertThat("Cloned builder changed after creating new one",
