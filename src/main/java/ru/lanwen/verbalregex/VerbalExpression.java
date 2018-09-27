@@ -73,7 +73,7 @@ public class VerbalExpression {
          * Everything added to the expression should go trough this method
          * (keep in mind when creating your own methods).
          * All existing methods already use this, so for basic usage, you can just ignore this method.
-         * <p/>
+         * <p>
          * Example:
          * regex().add("\n.*").build() // produce exact "\n.*" regexp
          *
