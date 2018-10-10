@@ -133,4 +133,20 @@ public class RealWorldUnitTest {
 
         assertEquals(some, expression.getText(line_break + some + text, 1));
     }
+
+    @Test
+    public void captureAfterNewLineHasANamedGroup() {
+
+        final String line_break = "\n";
+        final String some = "some";
+        final String text = " text";
+        final String captureName = "name";
+        final VerbalExpression expression = VerbalExpression.regex().
+                lineBreak()
+                .capture(captureName).find(some).endCapture().then(text)
+                .build();
+
+        assertEquals(some,
+                expression.getText(line_break + some + text, captureName));
+    }
 }
