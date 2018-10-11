@@ -131,7 +131,7 @@ public class RealWorldUnitTest {
                         .capture().find(some).endCapture().then(text)
                         .build();
 
-        assertEquals(some, expression.getText(lineBreak + some + text, 1));
+        assertThat(some, equalTo(expression.getText(lineBreak + some + text, 1)));
     }
 
     @Test
@@ -146,7 +146,7 @@ public class RealWorldUnitTest {
                 .capture(captureName).find(some).endCapture().then(text)
                 .build();
 
-        assertEquals(some,
-                expression.getText(lineBreak + some + text, captureName));
+        assertThat(some,
+                equalTo(expression.getText(lineBreak + some + text, captureName)));
     }
 }
