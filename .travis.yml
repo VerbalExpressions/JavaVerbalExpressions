@@ -12,7 +12,7 @@ before_install:
   - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
 
 after_success:
-  - mvn clean cobertura:cobertura -Dcobertura.report.format=xml org.eluder.coveralls:coveralls-maven-plugin:3.0.1:report
+  - mvn clean cobertura:cobertura -Dcobertura.report.format=xml org.eluder.coveralls:coveralls-maven-plugin:4.3.0:report
 
 notifications:
  email: false
