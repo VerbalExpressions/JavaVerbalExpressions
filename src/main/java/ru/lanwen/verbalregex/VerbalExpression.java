@@ -583,6 +583,14 @@ public class VerbalExpression {
 
         /**
          * Adds named-capture - open brace to current position and closed to suffixes
+         * <p>
+         * <pre>Example:{@code
+         * String text = "test@example.com";
+         * VerbalExpression regex = regex()
+         *         .find("@")
+         *         .capture("domain").anything().build();
+         * regex.getText(text, "domain"); // => "example.com"
+         * }</pre>
          *
          * @return this builder
          * @since 1.6
@@ -742,6 +750,8 @@ public class VerbalExpression {
 
     /**
      * Extract exact named-group from string
+     * <p>
+     * Example is see to {@link Builder#capture(String)}
      *
      * @param toTest - string to extract from
      * @param group  - group to extract
