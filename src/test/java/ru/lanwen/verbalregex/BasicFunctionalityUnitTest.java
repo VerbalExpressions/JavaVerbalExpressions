@@ -227,13 +227,13 @@ public class BasicFunctionalityUnitTest {
                     .startOfLine()
                     .word()
                     .build();
-       
+
        assertThat("word", testRegex, matchesTo("abc123"));
        assertThat("non-word", testRegex, not(matchesTo("@#")));
     }
-    
+
     @Test
-    public void testMultipleNoRange() {        
+    public void testMultipleNoRange() {
        VerbalExpression testRegexStringOnly = new VerbalExpression.Builder()
                     .startOfLine()
                     .multiple("abc")
@@ -247,54 +247,54 @@ public class BasicFunctionalityUnitTest {
                            .multiple("abc", 2, 4, 8)
                            .build();
        VerbalExpression[] testRegexesSameBehavior = {
-                           testRegexStringOnly, 
+                           testRegexStringOnly,
                            testRegexStringAndNull,
                            testRegexMoreThan2Ints
                     };
        for (VerbalExpression testRegex : testRegexesSameBehavior) {
-             assertThat("abc once", testRegex, 
+             assertThat("abc once", testRegex,
                            matchesTo("abc"));
-             assertThat("abc more than once", testRegex, 
+             assertThat("abc more than once", testRegex,
                            matchesTo("abcabcabc"));
-             assertThat("no abc", testRegex, 
+             assertThat("no abc", testRegex,
                            not(matchesTo("xyz")));
        }
     }
-    
+
     @Test
-    public void testMultipleFrom() { 
+    public void testMultipleFrom() {
        VerbalExpression testRegexFrom = new VerbalExpression.Builder()
                            .startOfLine()
                            .multiple("abc", 2)
                            .build();
-       assertThat("no abc", testRegexFrom, 
+       assertThat("no abc", testRegexFrom,
                     not(matchesTo("xyz")));
-       assertThat("abc less than 2 times", testRegexFrom, 
+       assertThat("abc less than 2 times", testRegexFrom,
                     not(matchesTo("abc")));
-       assertThat("abc exactly 2 times", testRegexFrom, 
+       assertThat("abc exactly 2 times", testRegexFrom,
                     matchesTo("abcabc"));
-       assertThat("abc more than 2 times", testRegexFrom, 
+       assertThat("abc more than 2 times", testRegexFrom,
                     matchesTo("abcabcabc"));
     }
-    
+
     @Test
-    public void testMultipleFromTo() { 
+    public void testMultipleFromTo() {
        VerbalExpression testRegexFromTo = new VerbalExpression.Builder()
                            .startOfLine()
                            .multiple("abc", 2, 4)
                            .build();
        assertThat("no abc", testRegexFromTo, not(matchesTo("xyz")));
-       assertThat("abc less than 2 times", testRegexFromTo, 
+       assertThat("abc less than 2 times", testRegexFromTo,
                     not(matchesTo("abc")));
        assertThat("abc exactly 2 times", testRegexFromTo, matchesTo("abcabc"));
-       assertThat("abc between 2 and 4 times", testRegexFromTo, 
+       assertThat("abc between 2 and 4 times", testRegexFromTo,
                     matchesTo("abcabcabc"));
-       assertThat("abc exactly 4 times", testRegexFromTo, 
+       assertThat("abc exactly 4 times", testRegexFromTo,
                     matchesTo("abcabcabcabc"));
-       assertThat("abc more than 4 times", testRegexFromTo, 
+       assertThat("abc more than 4 times", testRegexFromTo,
                     not(matchesExactly("abcabcabcabcabc")));
     }
-    
+
     @Test
     public void testWithAnyCase() {
         VerbalExpression testRegex = new VerbalExpression.Builder()
@@ -385,9 +385,30 @@ public class BasicFunctionalityUnitTest {
     }
 
     @Test
+    public void testStartNamedCapture() {
+        String text = "test@example.com";
+        String captureName = "domain";
+        VerbalExpression regex = regex()
+                .find("@")
+                .capture(captureName).anything().build();
+
+        assertThat("can't get captured group named " + captureName,
+                regex.getText(text, captureName),
+                equalTo("example.com"));
+    }
+
+    @Test
     public void captIsSameAsCapture() {
-        assertThat("Capt produce defferent than capture regex", regex().capt().build().toString(),
+        assertThat("Capt produce different than capture regex", regex().capt().build().toString(),
                 equalTo(regex().capture().build().toString()));
+    }
+
+    @Test
+    public void namedCaptIsSameAsNamedCapture() {
+        String name = "test";
+        assertThat("Named-capt produce different than named-capture regex",
+                regex().capt(name).build().toString(),
+                equalTo(regex().capture(name).build().toString()));
     }
 
     @Test
@@ -424,6 +445,19 @@ public class BasicFunctionalityUnitTest {
         assertThat("can't get first captured group", regex.getText(text, 1), equalTo("b"));
     }
 
+    @Test
+    public void testEndNamedCapture() {
+        String text = "aaabcd";
+        String captureName = "str";
+        VerbalExpression regex = regex()
+                .find("a")
+                .capture(captureName).find("b").anything().endCapture()
+                .then("cd").build();
+
+        assertThat(regex.getText(text), equalTo("abcd"));
+        assertThat("can't get captured group named " + captureName,
+                regex.getText(text, captureName), equalTo("b"));
+    }
 
     @Test
     public void testMultiplyCapture() {
@@ -434,6 +468,22 @@ public class BasicFunctionalityUnitTest {
 
         assertThat("can't get first captured group", regex.getText(text, 1), equalTo("b"));
         assertThat("can't get second captured group", regex.getText(text, 2), equalTo("d"));
+    }
+
+    @Test
+    public void testMultiplyNamedCapture() {
+        String text = "aaabcd";
+        String captureName1 = "str1";
+        String captureName2 = "str2";
+        VerbalExpression regex = regex()
+                .find("a").count(1)
+                .capture(captureName1).find("b").endCapture()
+                .anything().capture(captureName2).find("d").build();
+
+        assertThat("can't get captured group named " + captureName1,
+                regex.getText(text, captureName1), equalTo("b"));
+        assertThat("can't get captured group named " + captureName2,
+                regex.getText(text, captureName2), equalTo("d"));
     }
 
     @Test
@@ -452,6 +502,26 @@ public class BasicFunctionalityUnitTest {
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
     }
 
+    @Test
+    public void testOrWithNamedCapture() {
+        String captureName = "test";
+        VerbalExpression testRegex = regex()
+                .capture(captureName)
+                .find("abc")
+                .or("def")
+                .build();
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def",
+                testRegex, not(matchesExactly("xyzabcefg")));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", captureName),
+                equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxdefzzz", captureName),
+                equalTo("null"));
+        assertThat(testRegex.getText("xxxabcdefzzz", captureName),
+                equalTo("abcnull"));
+    }
 
     @Test
     public void testOrWithClosedCapture() {
@@ -468,6 +538,28 @@ public class BasicFunctionalityUnitTest {
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
         assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("null"));
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
+    }
+
+    @Test
+    public void testOrWithClosedNamedCapture() {
+        String captureName = "test";
+        VerbalExpression testRegex = regex()
+                .capture(captureName)
+                .find("abc")
+                .endCapt()
+                .or("def")
+                .build();
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def",
+                testRegex, not(matchesExactly("xyzabcefg")));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", captureName),
+                equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxdefzzz", captureName),
+                equalTo("null"));
+        assertThat(testRegex.getText("xxxabcdefzzz", captureName),
+                equalTo("abcnull"));
     }
 
     @Test
@@ -563,7 +655,7 @@ public class BasicFunctionalityUnitTest {
         assertThat(regexWithOneOrMore, matchesTo(empty));
         assertThat(regexWithOneOrMore, matchesExactly(empty));
     }
-    
+
     @Test
     public void testOneOf() {
         VerbalExpression testRegex = new VerbalExpression.Builder()
@@ -575,7 +667,7 @@ public class BasicFunctionalityUnitTest {
         assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
         assertThat("Doesn't start with abc nor def", testRegex, not(matchesTo("xyzabc")));
     }
-    
+
     @Test
     public void testOneOfWithCapture() {
         VerbalExpression testRegex = regex()
@@ -588,6 +680,24 @@ public class BasicFunctionalityUnitTest {
 
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
         assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("def"));
+    }
+
+    @Test
+    public void testOneOfWithNamedCapture() {
+        String captureName = "test";
+        VerbalExpression testRegex = regex()
+                .capture(captureName)
+                .oneOf("abc", "def")
+                .build();
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def",
+                testRegex, not(matchesExactly("xyzabcefg")));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", captureName),
+                equalTo("abcdef"));
+        assertThat(testRegex.getText("xxxdefzzz", captureName),
+                equalTo("def"));
     }
 
     @Test
@@ -604,7 +714,26 @@ public class BasicFunctionalityUnitTest {
         assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcdef"));
         assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("def"));
     }
-    
+
+    @Test
+    public void testOneOfWithClosedNamedCapture() {
+        String captureName = "test";
+        VerbalExpression testRegex = regex()
+                .capture(captureName)
+                .oneOf("abc", "def")
+                .endCapt()
+                .build();
+        assertThat("Starts with abc or def", testRegex, matchesTo("defzzz"));
+        assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
+        assertThat("Doesn't start with abc or def",
+                testRegex, not(matchesExactly("xyzabcefg")));
+
+        assertThat(testRegex.getText("xxxabcdefzzz", captureName),
+                equalTo("abcdef"));
+        assertThat(testRegex.getText("xxxdefzzz", captureName),
+                equalTo("def"));
+    }
+
     @Test
     public void shouldAddMaybeWithOneOfFromAnotherBuilder() {
 	VerbalExpression.Builder namePrefix = regex().oneOf("Mr.", "Ms.");
@@ -615,12 +744,12 @@ public class BasicFunctionalityUnitTest {
 		.word()
 		.oneOrMore()
 		.build();
-	
+
 	assertThat("Is a name with prefix", name, matchesTo("Mr. Bond"));
 	assertThat("Is a name without prefix", name, matchesTo("James"));
-	
+
     }
-    
+
     @Test
     public void testListOfTextGroups() {
         String text = "SampleHelloWorldString";
@@ -630,7 +759,7 @@ public class BasicFunctionalityUnitTest {
                 .endCapt()
                 .maybe("String")
                 .build();
-        
+
         List<String> groups0 = regex.getTextGroups(text, 0);
 
         assertThat(groups0.get(0), equalTo("Hello"));

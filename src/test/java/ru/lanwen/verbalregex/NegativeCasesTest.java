@@ -30,6 +30,15 @@ public class NegativeCasesTest {
         regex.getText(text, 2);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldExceptionWhenTryGetByNonExistentCaptureName() {
+        String text = "abc";
+        VerbalExpression regex = regex().find("b")
+                .capture("test1").find("c").build();
+
+        regex.getText(text, "test2");
+    }
+
     @Test(expected = PatternSyntaxException.class)
     public void testRangeWithoutArgs() throws Exception {
         regex().startOfLine().range().build();
@@ -64,6 +73,20 @@ public class NegativeCasesTest {
 
         assertThat("regex dont matches string abcd", regex.getText("abcd", 0), equalTo("a"));
         assertThat("regex dont extract a by first group", regex.getText("abcd", 1), equalTo(""));
+    }
+
+    @Test
+    public void orAfterNamedCaptureProduceEmptyGroup() {
+        String captureName = "test";
+        VerbalExpression regex = regex().startOfLine().then("a")
+                .capture(captureName).or("b").build();
+
+        assertThat(regex.toString(), containsString("(?<test>)|"));
+
+        assertThat("regex don't matches string abcd",
+                regex.getText("abcd", 0), equalTo("a"));
+        assertThat("regex don't extract a by group named " + captureName,
+                regex.getText("abcd", captureName), equalTo(""));
     }
 
     @Test

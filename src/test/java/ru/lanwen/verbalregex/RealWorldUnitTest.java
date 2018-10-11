@@ -123,7 +123,7 @@ public class RealWorldUnitTest {
     @Test
     public void captureAfterNewLineHasGroupNumberOne() throws Exception {
 
-        final String line_break = "\n";
+        final String lineBreak = "\n";
         final String some = "some";
         final String text = " text";
         final VerbalExpression expression = VerbalExpression.regex().
@@ -131,6 +131,22 @@ public class RealWorldUnitTest {
                         .capture().find(some).endCapture().then(text)
                         .build();
 
-        assertEquals(some, expression.getText(line_break + some + text, 1));
+        assertThat(some, equalTo(expression.getText(lineBreak + some + text, 1)));
+    }
+
+    @Test
+    public void captureAfterNewLineHasANamedGroup() {
+
+        final String lineBreak = "\n";
+        final String some = "some";
+        final String text = " text";
+        final String captureName = "name";
+        final VerbalExpression expression = VerbalExpression.regex().
+                lineBreak()
+                .capture(captureName).find(some).endCapture().then(text)
+                .build();
+
+        assertThat(some,
+                equalTo(expression.getText(lineBreak + some + text, captureName)));
     }
 }

@@ -578,8 +578,30 @@ public class VerbalExpression {
          * @return this builder
          */
         public Builder capture() {
+            return this.capture(null);
+        }
+
+        /**
+         * Adds named-capture - open brace to current position and closed to suffixes
+         * <p>
+         * <pre>Example:{@code
+         * String text = "test@example.com";
+         * VerbalExpression regex = regex()
+         *         .find("@")
+         *         .capture("domain").anything().build();
+         * regex.getText(text, "domain"); // => "example.com"
+         * }</pre>
+         *
+         * @return this builder
+         * @since 1.6
+         */
+        public Builder capture(final String name) {
             this.suffixes.append(")");
-            return this.add("(");
+
+            if (name == null || name.trim().isEmpty()) {
+                return this.add("(");
+            }
+            return this.add("(?<" + name + ">");
         }
 
         /**
@@ -590,6 +612,16 @@ public class VerbalExpression {
          */
         public Builder capt() {
             return this.capture();
+        }
+
+        /**
+         * Shortcut for {@link #capture(String)}
+         *
+         * @return this builder
+         * @since 1.6
+         */
+        public Builder capt(final String name) {
+            return this.capture(name);
         }
 
         /**
@@ -708,6 +740,25 @@ public class VerbalExpression {
      * @since 1.1
      */
     public String getText(final String toTest, final int group) {
+        Matcher m = pattern.matcher(toTest);
+        StringBuilder result = new StringBuilder();
+        while (m.find()) {
+            result.append(m.group(group));
+        }
+        return result.toString();
+    }
+
+    /**
+     * Extract exact named-group from string
+     * <p>
+     * Example is see to {@link Builder#capture(String)}
+     *
+     * @param toTest - string to extract from
+     * @param group  - group to extract
+     * @return extracted group
+     * @since 1.6
+     */
+    public String getText(final String toTest, final String group) {
         Matcher m = pattern.matcher(toTest);
         StringBuilder result = new StringBuilder();
         while (m.find()) {
