@@ -20,6 +20,7 @@ public class PredefinedCharClassesTest {
     public static final String DIGITS = "0123456789";
     public static final String NON_LETTERS = ";'[]{}|?/";
     public static final String SPACE = " \t\n\f\r";
+    public static final String LETTERS_ONLY_WORD = "q";
 
     @Test
     public void testWordChar() throws Exception {
@@ -95,6 +96,17 @@ public class PredefinedCharClassesTest {
         assertThat("matches on space and non letters", regex, not(matchesTo(SPACE + NON_LETTERS)));
         assertThat("extracts wrong chars",
                 regex.getText(LETTERS_NO_DIGITS + DIGITS + NON_LETTERS + SPACE), is(LETTERS_NO_DIGITS + DIGITS));
+
+    }
+
+    @Test
+    public void testAlphabet() throws Exception {
+        VerbalExpression regex = regex().alphabet().build();
+
+        assertThat("matches on letters", regex, matchesTo((LETTERS_ONLY_WORD)));
+        assertThat("not matches on digit", regex, not(matchesTo(DIGITS)));
+        assertThat("Extracts wrong chars",
+                regex.getText(LETTERS_ONLY_WORD + DIGITS + NON_LETTERS + SPACE), equalTo(LETTERS_ONLY_WORD));
 
     }
 }
