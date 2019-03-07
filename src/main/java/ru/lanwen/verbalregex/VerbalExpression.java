@@ -335,6 +335,13 @@ public class VerbalExpression {
             return this.add("(?:\\S)");
         }
 
+        /**
+         * Add alphabet character: [a-zA-Z]
+         * @return this builder
+         */
+        public Builder alphabet() {
+            return this.add("(?:[a-zA-Z])");
+        }
 
         /*
            --- / end of predefined character classes
