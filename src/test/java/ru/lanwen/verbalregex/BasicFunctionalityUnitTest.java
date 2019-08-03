@@ -770,4 +770,17 @@ public class BasicFunctionalityUnitTest {
         assertThat(groups1.get(0), equalTo("Hello"));
         assertThat(groups1.get(1), equalTo("World"));
     }
+
+    @Test
+    public void testWordBoundary() {
+        VerbalExpression regex = regex()
+                .capture()
+                .wordBoundary().then("o").word().oneOrMore().wordBoundary()
+                .endCapture()
+                .build();
+
+        assertThat(regex.getText("apple orange grape", 1), is("orange"));
+        assertThat(regex.test("appleorange grape"), is(false));
+        assertThat(regex.test("apple3orange grape"), is(false));
+    }
 }

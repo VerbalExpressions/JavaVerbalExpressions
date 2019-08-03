@@ -335,6 +335,25 @@ public class VerbalExpression {
             return this.add("(?:\\S)");
         }
 
+        /**
+         * Add word boundary: \b
+         * <p>
+         * Example:
+         * <pre>{@code
+         * VerbalExpression regex = regex()
+         *         .wordBoundary().find("abc").wordBoundary()
+         *         .build();
+         * regex.test("a abc"); // true
+         * regex.test("a.abc"); // true
+         * regex.test("aabc"); // false
+         * }</pre>
+         *
+         * @return this builder
+         */
+        public Builder wordBoundary() {
+            return this.add("(?:\\b)");
+        }
+
 
         /*
            --- / end of predefined character classes
