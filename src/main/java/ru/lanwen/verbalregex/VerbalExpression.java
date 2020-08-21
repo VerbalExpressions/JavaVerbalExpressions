@@ -762,7 +762,10 @@ public class VerbalExpression {
         Matcher m = pattern.matcher(toTest);
         StringBuilder result = new StringBuilder();
         while (m.find()) {
-            result.append(m.group(group));
+            String groupValue = m.group(group);
+            if (groupValue != null) {
+                result.append(groupValue);
+            }
         }
         return result.toString();
     }
@@ -781,7 +784,10 @@ public class VerbalExpression {
         Matcher m = pattern.matcher(toTest);
         StringBuilder result = new StringBuilder();
         while (m.find()) {
-            result.append(m.group(group));
+            String groupValue = m.group(group);
+            if (groupValue != null) {
+                result.append(groupValue);
+            }
         }
         return result.toString();
     }
