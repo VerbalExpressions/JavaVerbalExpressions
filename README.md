@@ -16,7 +16,7 @@ Maven Dependency:
 <dependency>
   <groupId>ru.lanwen.verbalregex</groupId>
   <artifactId>java-verbal-expressions</artifactId>
-  <version>1.5</version>
+  <version>1.8</version>
 </dependency>
 ```
 
