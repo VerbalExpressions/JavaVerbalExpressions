@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static ru.lanwen.verbalregex.VerbalExpression.regex;
@@ -148,5 +149,21 @@ public class RealWorldUnitTest {
 
         assertThat(some,
                 equalTo(expression.getText(lineBreak + some + text, captureName)));
+    }
+
+    @Test
+    public void missingOptionalCaptureGroupReturnsEmptyStringNotStringContainingNullLiteral() {
+        final VerbalExpression expression = VerbalExpression.regex().
+                startOfLine()
+                .capture("optionalCapture")
+                .oneOf("a", "b")
+                .endCapture()
+                .count(0, 1)
+                .then("c")
+                .endOfLine()
+                .build();
+        final String testString = "c";
+        assertThat(expression, matchesExactly(testString));
+        assertThat(expression.getText("c", "optionalCapture"), equalTo(""));
     }
 }

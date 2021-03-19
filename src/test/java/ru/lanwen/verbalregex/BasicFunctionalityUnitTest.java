@@ -497,9 +497,9 @@ public class BasicFunctionalityUnitTest {
         assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
         assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
 
-        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
-        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("null"));
-        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abc"));
+        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo(""));
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abc"));
     }
 
     @Test
@@ -516,11 +516,11 @@ public class BasicFunctionalityUnitTest {
                 testRegex, not(matchesExactly("xyzabcefg")));
 
         assertThat(testRegex.getText("xxxabcdefzzz", captureName),
-                equalTo("abcnull"));
+                equalTo("abc"));
         assertThat(testRegex.getText("xxxdefzzz", captureName),
-                equalTo("null"));
+                equalTo(""));
         assertThat(testRegex.getText("xxxabcdefzzz", captureName),
-                equalTo("abcnull"));
+                equalTo("abc"));
     }
 
     @Test
@@ -535,9 +535,9 @@ public class BasicFunctionalityUnitTest {
         assertThat("Starts with abc or def", testRegex, matchesTo("abczzz"));
         assertThat("Doesn't start with abc or def", testRegex, not(matchesExactly("xyzabcefg")));
 
-        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
-        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo("null"));
-        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abcnull"));
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abc"));
+        assertThat(testRegex.getText("xxxdefzzz", 1), equalTo(""));
+        assertThat(testRegex.getText("xxxabcdefzzz", 1), equalTo("abc"));
     }
 
     @Test
@@ -555,11 +555,11 @@ public class BasicFunctionalityUnitTest {
                 testRegex, not(matchesExactly("xyzabcefg")));
 
         assertThat(testRegex.getText("xxxabcdefzzz", captureName),
-                equalTo("abcnull"));
+                equalTo("abc"));
         assertThat(testRegex.getText("xxxdefzzz", captureName),
-                equalTo("null"));
+                equalTo(""));
         assertThat(testRegex.getText("xxxabcdefzzz", captureName),
-                equalTo("abcnull"));
+                equalTo("abc"));
     }
 
     @Test
