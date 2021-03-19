@@ -164,7 +164,6 @@ public class RealWorldUnitTest {
                 .build();
         final String testString = "c";
         assertThat(expression, matchesExactly(testString));
-        assertThat(expression.getText("c", "optionalCapture"), not(equalTo("null")));
         assertThat(expression.getText("c", "optionalCapture"), equalTo(""));
     }
 }
