@@ -20,15 +20,16 @@ public class VerbalExpression {
         private StringBuilder suffixes = new StringBuilder();
         private int modifiers = Pattern.MULTILINE;
 
-        private static final Map<Character, Integer> SYMBOL_MAP = new HashMap<Character, Integer>() {{
-            put('d', Pattern.UNIX_LINES);
-            put('i', Pattern.CASE_INSENSITIVE);
-            put('x', Pattern.COMMENTS);
-            put('m', Pattern.MULTILINE);
-            put('s', Pattern.DOTALL);
-            put('u', Pattern.UNICODE_CASE);
-            put('U', Pattern.UNICODE_CHARACTER_CLASS);
-        }};
+        private static final Map<Character, Integer> SYMBOL_MAP = new HashMap<>();
+        static {
+        	SYMBOL_MAP.put('d', Pattern.UNIX_LINES);
+        	SYMBOL_MAP.put('i', Pattern.CASE_INSENSITIVE);
+        	SYMBOL_MAP.put('x', Pattern.COMMENTS);
+        	SYMBOL_MAP.put('m', Pattern.MULTILINE);
+        	SYMBOL_MAP.put('s', Pattern.DOTALL);
+        	SYMBOL_MAP.put('u', Pattern.UNICODE_CASE);
+        	SYMBOL_MAP.put('U', Pattern.UNICODE_CHARACTER_CLASS);
+        }
 
         /**
          * Package private. Use {@link #regex()} to build a new one
