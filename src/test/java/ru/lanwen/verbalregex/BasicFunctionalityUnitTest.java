@@ -609,7 +609,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void oneOreMoreSameAsAtLeast1() throws Exception {
-        VerbalExpression regexWithOneOrMore = regex().find("a").oneOrMore().build();
+        VerbalExpression regexWithOneOrMore = regex().oneOrMore("a").build();
 
         String matched = "aaaaaa";
         String oneMatchedExactly = "a";
@@ -641,7 +641,7 @@ public class BasicFunctionalityUnitTest {
 
     @Test
     public void zeroOreMoreSameAsAtLeast0() throws Exception {
-        VerbalExpression regexWithOneOrMore = regex().find("a").zeroOrMore().build();
+        VerbalExpression regexWithOneOrMore = regex().zeroOrMore("a").build();
 
         String matched = "aaaaaa";
         String oneMatchedExactly = "a";
@@ -739,10 +739,8 @@ public class BasicFunctionalityUnitTest {
 	VerbalExpression.Builder namePrefix = regex().oneOf("Mr.", "Ms.");
 	VerbalExpression name = regex()
 		.maybe(namePrefix)
-		.space()
-		.zeroOrMore()
-		.word()
-		.oneOrMore()
+		.zeroOrMore(" ")
+		.add("\\w+")
 		.build();
 
 	assertThat("Is a name with prefix", name, matchesTo("Mr. Bond"));
