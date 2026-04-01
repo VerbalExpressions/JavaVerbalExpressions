@@ -59,22 +59,22 @@ public class RealWorldUnitTest {
         String logLine = "3\t4\t1\thttp://localhost:20001\t1\t63528800\t0\t63528800\t1000000000\t0\t63528800\tSTR1";
 
         VerbalExpression regex = regex()
-                .capt().digit().oneOrMore().endCapture().tab()
-                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().add("\\d+").endCapture().tab()
+                .capt().add("\\d+").endCapture().tab()
                 .capt().range("0", "1").count(1).endCapture().tab()
                 .capt().find("http://localhost:20").digit().count(3).endCapture().tab()
                 .capt().range("0", "1").count(1).endCapture().tab()
-                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().add("\\d+").endCapture().tab()
                 .capt().range("0", "1").count(1).endCapture().tab()
-                .capt().digit().oneOrMore().endCapture().tab()
-                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().add("\\d+").endCapture().tab()
+                .capt().add("\\d+").endCapture().tab()
                 .capt().range("0", "1").count(1).endCapture().tab()
-                .capt().digit().oneOrMore().endCapture().tab()
+                .capt().add("\\d+").endCapture().tab()
                 .capt().find("STR").range("0", "2").count(1).endCapture().build();
 
         assertThat(regex, matchesExactly(logLine));
 
-        VerbalExpression.Builder digits = regex().capt().digit().oneOrMore().endCapt().tab();
+        VerbalExpression.Builder digits = regex().capt().add("\\d+").endCapt().tab();
         VerbalExpression.Builder range = regex().capt().range("0", "1").count(1).endCapt().tab();
         VerbalExpression.Builder host = regex().capt().find("http://localhost:20").digit().count(3).endCapt().tab();
         VerbalExpression.Builder fake = regex().capt().find("STR").range("0", "2").count(1);
