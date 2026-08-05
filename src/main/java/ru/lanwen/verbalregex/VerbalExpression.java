@@ -814,6 +814,17 @@ public class VerbalExpression {
         return groups;
     }
 
+    /**
+     * Provides access to the underlying regex {@link Pattern}. This can be useful
+     * for interacting with other parts of the ecosystem or for doing more fine
+     * grain matching than supported by the methods on this class.
+     *
+     * @return The regex pattern which the {@link VerbalExpression} represents.
+     */
+    public Pattern pattern() {
+        return this.pattern;
+    }
+
     @Override
     public String toString() {
         return pattern.pattern();
